@@ -81,10 +81,10 @@ public class Boid : MonoBehaviour, ICellEntity
         // Target
         newDirection += (Settings.Target - transform.position).normalized * Settings.TargetWeight;
 
-        if (NearestNeighbor != null)
+        if (NearestNeighbor != null && AggregatedNeighbors.Count > 1)
         {
             var nearestNeighborDiff = (transform.position - NearestNeighbor.transform.position);
-            var centerDiff = AggregatedNeighbors.Position - transform.position;
+            var centerDiff = AggregatedNeighbors.Data[Settings.GetInstanceID()].Position - transform.position;
             var centerDiffNormalized = centerDiff.normalized;
             
             
@@ -92,14 +92,25 @@ public class Boid : MonoBehaviour, ICellEntity
             newDirection += Settings.SeperationWeight * nearestNeighborDiff.normalized / Mathf.Max(0.001f, nearestNeighborDiff.magnitude);
 
             // Alignment
-            newDirection += Settings.AlignmentWeight * AggregatedNeighbors.Direction / Mathf.Max(0.001f, centerDiff.magnitude);
+            newDirection += Settings.AlignmentWeight * AggregatedNeighbors.Data[Settings.GetInstanceID()].Direction / Mathf.Max(0.001f, centerDiff.magnitude);
 
             // Cohesion
             newDirection += Settings.CohesionWeight * centerDiffNormalized;
+
+            // Sozial
+            foreach(var relation in Settings.Relations)
+            {
+                var key = relation.Settings.GetInstanceID();
+                if (AggregatedNeighbors.Data.ContainsKey(key))
+                {
+                    var otherInfo = AggregatedNeighbors.Data[key];
+                    var diff = (otherInfo.Position - transform.position);
+                    newDirection += diff.normalized / diff.magnitude * relation.Friendly;
+                }
+            }
         }
         
-        var foo = Vector3.Lerp(transform.forward, newDirection.normalized, Settings.DirectionReactionSpeed);
-        transform.forward = foo;
+        transform.forward = Vector3.Lerp(transform.forward, newDirection, Settings.DirectionReactionSpeed);
     }
     
     public void ProcessSpeed()
@@ -134,9 +145,9 @@ public class Boid : MonoBehaviour, ICellEntity
 
         var agg = CellManager.GetNeighborAggregation(ProvideCellPosition());
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, agg.Position);
+        Gizmos.DrawLine(transform.position, agg.Data[Settings.GetInstanceID()].Position);
 
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, transform.position + agg.Direction);
+        Gizmos.DrawLine(transform.position, transform.position + agg.Data[Settings.GetInstanceID()].Direction);
     }
 }
