@@ -8,6 +8,6 @@ public interface ICellManager<TCell, TAggregation>
 
     void Add(TCell entity);
     void UpdateLists();
-    IEnumerable<TCell> GetNeighbourEntities(Vector3 position);
+    IEnumerable<TCell>[] GetNeighbourEntities(Vector3 position);
     TAggregation GetNeighborAggregation(Vector3 position);
 }

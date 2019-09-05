@@ -15,9 +15,7 @@ public class AggregatedBoidData : ICellAggregation<AggregatedBoidData, Boid>
 
     public AggregatedBoidData()
     {
-        Count = 0;
-        Position = Vector3.zero;
-        Direction = Vector3.zero;
+        Clear();
     }
     
 
@@ -45,6 +43,15 @@ public class AggregatedBoidData : ICellAggregation<AggregatedBoidData, Boid>
     {
         Position = Position / Count;
         Direction.Normalize();
+
+        return this;
+    }
+
+    public AggregatedBoidData Clear()
+    {
+        Count = 0;
+        Position = Vector3.zero;
+        Direction = Vector3.zero;
 
         return this;
     }

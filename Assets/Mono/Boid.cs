@@ -8,7 +8,7 @@ public class Boid : MonoBehaviour, ICellEntity
     public BoidSettings Settings;
 
     private ICellManager<Boid, AggregatedBoidData> CellManager;
-    private IEnumerable<Boid> NeighborBoids;
+    private IEnumerable<Boid>[] NeighborBoidsLists;
     private AggregatedBoidData AggregatedNeighbors;
     private Boid NearestNeighbor;
     
@@ -19,7 +19,7 @@ public class Boid : MonoBehaviour, ICellEntity
         var cellPosition = ProvideCellPosition();
 
         UnityEngine.Profiling.Profiler.BeginSample("Neighbor boids");
-        NeighborBoids = CellManager.GetNeighbourEntities(cellPosition);
+        NeighborBoidsLists = CellManager.GetNeighbourEntities(cellPosition);
         UnityEngine.Profiling.Profiler.EndSample();
 
 
@@ -29,7 +29,7 @@ public class Boid : MonoBehaviour, ICellEntity
 
 
         UnityEngine.Profiling.Profiler.BeginSample("Nearest neighbor");
-        NearestNeighbor = EvaluateNearestNeighbor(NeighborBoids);
+        NearestNeighbor = EvaluateNearestNeighbor(NeighborBoidsLists);
         UnityEngine.Profiling.Profiler.EndSample();
 
 
@@ -41,33 +41,39 @@ public class Boid : MonoBehaviour, ICellEntity
     
 
 
-    public Boid EvaluateNearestNeighbor(IEnumerable<Boid> neighbors)
+    public Boid EvaluateNearestNeighbor(IEnumerable<IEnumerable<Boid>> neighborsLists)
     {
         var count = 1;
         Boid nearestBoid = null;
         var nearestDistance = 1000000f;
 
-        foreach (var neighbor in neighbors)
+        foreach(var list in neighborsLists)
         {
-            if (count > Settings.NearestNeighborLimit)
-                break;
-            if (neighbor.Equals(this))
-                continue;
-
-            var distance = (neighbor.transform.position - transform.position).sqrMagnitude;
-            if (distance < nearestDistance)
+            foreach (var neighbor in list)
             {
-                nearestBoid = neighbor;
-                nearestDistance = distance;
+                if (count > Settings.NearestNeighborLimit)
+                    break;
+                if (neighbor.Equals(this))
+                    continue;
+
+                var distance = (neighbor.transform.position - transform.position).sqrMagnitude;
+                if (distance < nearestDistance)
+                {
+                    nearestBoid = neighbor;
+                    nearestDistance = distance;
+                }
+
+                count++;
             }
 
-            count++;
+            if (count > Settings.NearestNeighborLimit)
+                break;
         }
+
 
         return nearestBoid;
     }
 
-    private Vector3 CohesionD;
     public void ProcessDirection()
     {
         var newDirection = transform.forward;
@@ -75,7 +81,7 @@ public class Boid : MonoBehaviour, ICellEntity
         // Target
         newDirection += (Settings.Target - transform.position).normalized * Settings.TargetWeight;
 
-        if (NeighborBoids.Count() > 1 && NearestNeighbor != null)
+        if (NearestNeighbor != null)
         {
             var nearestNeighborDiff = (transform.position - NearestNeighbor.transform.position);
             var centerDiff = AggregatedNeighbors.Position - transform.position;
@@ -83,18 +89,17 @@ public class Boid : MonoBehaviour, ICellEntity
             
             
             // Seperation
-            newDirection += Settings.SeperationWeight * nearestNeighborDiff.normalized / nearestNeighborDiff.magnitude;
+            newDirection += Settings.SeperationWeight * nearestNeighborDiff.normalized / Mathf.Max(0.001f, nearestNeighborDiff.magnitude);
 
             // Alignment
-            newDirection += Settings.AlignmentWeight * AggregatedNeighbors.Direction / centerDiff.magnitude;
+            newDirection += Settings.AlignmentWeight * AggregatedNeighbors.Direction / Mathf.Max(0.001f, centerDiff.magnitude);
 
             // Cohesion
-            CohesionD = centerDiffNormalized;
             newDirection += Settings.CohesionWeight * centerDiffNormalized;
         }
-
-        newDirection.Normalize();
-        transform.forward = Vector3.Lerp(transform.forward, newDirection, Settings.DirectionReactionSpeed);
+        
+        var foo = Vector3.Lerp(transform.forward, newDirection.normalized, Settings.DirectionReactionSpeed);
+        transform.forward = foo;
     }
     
     public void ProcessSpeed()
@@ -117,11 +122,14 @@ public class Boid : MonoBehaviour, ICellEntity
 
     private void OnDrawGizmosSelected()
     {
-        var neighbors = CellManager.GetNeighbourEntities(ProvideCellPosition());
-        foreach(var neighbor in neighbors)
+        var neighborLists = CellManager.GetNeighbourEntities(ProvideCellPosition());
+        foreach(var list in neighborLists)
         {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawLine(transform.position, neighbor.transform.position);
+            foreach(var neighbor in list)
+            {
+                Gizmos.color = Color.blue;
+                Gizmos.DrawLine(transform.position, neighbor.transform.position);
+            }
         }
 
         var agg = CellManager.GetNeighborAggregation(ProvideCellPosition());

@@ -17,13 +17,16 @@ public class CellManager<TEntity, TAggregation>
     }
     public List<TEntity> Entities;
     public ILookup<int, TEntity> EntityBuckets;
-    public IDictionary<int, TAggregation> EntityAggregates;
+    public Dictionary<int, TAggregation> EntityAggregates;
 
-    
+    private TAggregation AggregationResult;
+
+
 
     public CellManager()
     {
         Entities = new List<TEntity>();
+        AggregationResult = new TAggregation();
     }
 
     public CellManager(float cellSize)
@@ -52,27 +55,32 @@ public class CellManager<TEntity, TAggregation>
         );
     }
 
-
-    public IEnumerable<TEntity> GetNeighbourEntities(Vector3 position)
+    public IEnumerable<TEntity>[] GetNeighbourEntities(Vector3 position)
     {
         var centerOffset = SignVector(position) * new Vector3(0.5f);
         var bucketCenter = CeilVector(position) - centerOffset;
         var relevantDirection = SignVector(position - bucketCenter);
 
-        var neighbors = EntityBuckets[PositionHash(position)];
-        foreach (var center in RelevantNeighborBucketCenters(bucketCenter, relevantDirection))
-            neighbors = neighbors.Concat(EntityBuckets[Vector3Hash(center)]);
-
-        return neighbors;
+        bucketCenter *= CellScale;
+        return new IEnumerable<TEntity>[] {
+            EntityBuckets[Vector3Hash(bucketCenter)],
+            EntityBuckets[Vector3Hash(bucketCenter + Vector3.One * relevantDirection)],
+            EntityBuckets[Vector3Hash(bucketCenter + new Vector3(relevantDirection.X, 0f, 0f))],
+            EntityBuckets[Vector3Hash(bucketCenter + new Vector3(0f, relevantDirection.Y, 0f))],
+            EntityBuckets[Vector3Hash(bucketCenter + new Vector3(0f, 0f, relevantDirection.Z))],
+            EntityBuckets[Vector3Hash(bucketCenter + new Vector3(relevantDirection.X, relevantDirection.Y, 0f))],
+            EntityBuckets[Vector3Hash(bucketCenter + new Vector3(relevantDirection.X, 0f, relevantDirection.Z))],
+            EntityBuckets[Vector3Hash(bucketCenter + new Vector3(0f, relevantDirection.Y, relevantDirection.Z))]
+        };
     }
     
-    public TAggregation GetNeighborAggregation(Vector3 position)
+    public TAggregation GetNeighborAggregation(Vector3 position) // 7.7ms
     {
         var centerOffset = SignVector(position) * new Vector3(0.5f);
         var bucketCenter = CeilVector(position) - centerOffset;
         var relevantDirection = SignVector(position - bucketCenter);
-
-        var summary = new TAggregation().Aggregate(EntityAggregates[PositionHash(position)]);
+        
+        var summary = AggregationResult.Clear().Aggregate(EntityAggregates[PositionHash(position)]);
         foreach (var center in RelevantNeighborBucketCenters(bucketCenter, relevantDirection))
         {
             var otherBucketHash = Vector3Hash(center);
@@ -83,11 +91,11 @@ public class CellManager<TEntity, TAggregation>
         return summary.Finialize();
     }
     
-    private IList<Vector3> RelevantNeighborBucketCenters(Vector3 origin, Vector3 relevantDirection)
+    private Vector3[] RelevantNeighborBucketCenters(Vector3 origin, Vector3 relevantDirection)
     {
         origin *= CellScale;
 
-        return new List<Vector3>
+        return new Vector3[]
         {
             origin + Vector3.One * relevantDirection,
 

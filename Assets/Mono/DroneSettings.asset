@@ -15,9 +15,9 @@ MonoBehaviour:
   NearestNeighborLimit: 5
   Speed: 3
   DirectionReactionSpeed: 0.05
-  TargetWeight: 5
+  TargetWeight: 1
   SeperationWeight: 1
-  AlignmentWeight: 2
-  CohesionWeight: 5
+  AlignmentWeight: 1
+  CohesionWeight: 1
   FoodChainLevel: 0
-  Target: {x: 6.3, y: 0, z: -0.89}
+  Target: {x: 0, y: 0, z: 0}
