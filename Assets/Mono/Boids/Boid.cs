@@ -89,10 +89,10 @@ public class Boid : MonoBehaviour, ICellEntity
             
             
             // Seperation
-            newDirection += Settings.SeperationWeight * nearestNeighborDiff.normalized / Mathf.Max(0.001f, nearestNeighborDiff.magnitude);
+            newDirection += Settings.SeperationWeight * nearestNeighborDiff.normalized / Mathf.Max(0.001f, nearestNeighborDiff.sqrMagnitude);
 
             // Alignment
-            newDirection += Settings.AlignmentWeight * AggregatedNeighbors.Data[Settings.GetInstanceID()].Direction / Mathf.Max(0.001f, centerDiff.magnitude);
+            newDirection += Settings.AlignmentWeight * AggregatedNeighbors.Data[Settings.GetInstanceID()].Direction / Mathf.Max(0.001f, centerDiff.sqrMagnitude);
 
             // Cohesion
             newDirection += Settings.CohesionWeight * centerDiffNormalized;
@@ -105,7 +105,7 @@ public class Boid : MonoBehaviour, ICellEntity
                 {
                     var otherInfo = AggregatedNeighbors.Data[key];
                     var diff = (otherInfo.Position - transform.position);
-                    newDirection += diff.normalized / diff.magnitude * relation.Friendly;
+                    newDirection += diff.normalized / diff.sqrMagnitude * relation.Friendly;
                 }
             }
         }

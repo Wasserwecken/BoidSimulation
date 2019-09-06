@@ -152,7 +152,7 @@ MonoBehaviour:
   BoidPrefab: {fileID: 5323593494814010336, guid: beb589155c803ca4083d6fa643724d21,
     type: 3}
   CellManager: {fileID: 827669138}
-  Count: 800
+  Count: 500
   Radius: 20
 --- !u!4 &228557392
 Transform:
@@ -448,7 +448,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1511541224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -464,7 +464,7 @@ MonoBehaviour:
   BoidPrefab: {fileID: 5323593494814010336, guid: bfe05774fc9da9943b766229f7c9b573,
     type: 3}
   CellManager: {fileID: 827669138}
-  Count: 3
+  Count: 5
   Radius: 20
 --- !u!4 &1511541225
 Transform:

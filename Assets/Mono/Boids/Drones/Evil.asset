@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05802c6cf126e0a4a912d2d4826de89b, type: 3}
-  m_Name: Good
+  m_Name: Evil
   m_EditorClassIdentifier: 
   NearestNeighborLimit: 5
-  Speed: 3
-  DirectionReactionSpeed: 0.05
-  TargetWeight: 1
+  Speed: 4
+  DirectionReactionSpeed: 0.02
+  TargetWeight: 2
   SeperationWeight: 1
-  AlignmentWeight: 1
+  AlignmentWeight: 3
   CohesionWeight: 1
-  Target: {x: 0.34, y: 0, z: 0.97}
+  Target: {x: 0, y: 0, z: 0}
   Relations:
-  - Settings: {fileID: 11400000, guid: 537618ea11196e44da1f55ecb3fe2292, type: 2}
-    Friendly: -200
+  - Settings: {fileID: 11400000, guid: b50b7dec2f317034cbef74c5490c027c, type: 2}
+    Friendly: 20
