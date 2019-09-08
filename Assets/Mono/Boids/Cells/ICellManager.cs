@@ -7,7 +7,8 @@ public interface ICellManager<TEntity, TAggregation>
     float CellSize { get; set; }
 
     void Add(TEntity entity);
-    void UpdateLists();
+    void UpdateCells();
+    void UpdateCellAggregates();
     IEnumerable<TEntity>[] GetNeighbourEntities(Vector3 position);
     TAggregation GetNeighborAggregation(Vector3 position);
 }

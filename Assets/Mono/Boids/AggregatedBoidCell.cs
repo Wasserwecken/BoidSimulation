@@ -11,7 +11,9 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
     public Dictionary<int, CellData> BoidTypeData;
 
 
-    
+    /// <summary>
+    /// 
+    /// </summary>
     public AggregatedBoidCell()
     {
         BoidTypeData = new Dictionary<int, CellData>();
@@ -19,7 +21,11 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
     }
     
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <returns></returns>
     public AggregatedBoidCell Add(Boid entity)
     {
         Count++;
@@ -33,6 +39,11 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
         return this;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
     public AggregatedBoidCell Combine(AggregatedBoidCell other)
     {
         Count += other.Count;
@@ -48,6 +59,10 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
         return this;
     }
     
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public AggregatedBoidCell Finialize()
     {
         foreach (var k in BoidTypeData.Keys.ToList())
@@ -56,6 +71,10 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
         return this;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public AggregatedBoidCell Clear()
     {
         Count = 0;
@@ -65,7 +84,9 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
     }
 
 
-
+    /// <summary>
+    /// 
+    /// </summary>
     public struct CellData
     {
         public int Count { get; set; }
@@ -73,6 +94,11 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
         public Vector3 Direction;
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public CellData Add(Boid b)
         {
             Count++;
@@ -83,6 +109,11 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public CellData Combine(CellData other)
         {
             Count += other.Count;
@@ -92,6 +123,10 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public CellData Finalize()
         {
             Position = Position / Count;

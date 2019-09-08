@@ -7,16 +7,30 @@ public class BoidCellManager : MonoBehaviour
     private ICellManager<Boid, AggregatedBoidCell> CellManager = new CellManager<Boid, AggregatedBoidCell>();
 
 
+
+    /// <summary>
+    /// 
+    /// </summary>
     void Start()
     {
         CellManager.CellSize = CellSize;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     void Update()
     {
-        CellManager.UpdateLists();
+        CellManager.UpdateCells();
+        CellManager.UpdateCellAggregates();
     }
 
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="boid"></param>
     public void Add(Boid boid)
     {
         CellManager.Add(boid);

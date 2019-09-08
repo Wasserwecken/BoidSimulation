@@ -13,7 +13,9 @@ public class Boid : MonoBehaviour, ICellEntity
     private Boid NearestNeighbor;
     
     
-
+    /// <summary>
+    /// 
+    /// </summary>
     void Update()
     {
         var cellPosition = ProvideCellPosition();
@@ -40,7 +42,11 @@ public class Boid : MonoBehaviour, ICellEntity
     }
     
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="neighborsLists"></param>
+    /// <returns></returns>
     public Boid EvaluateNearestNeighbor(IEnumerable<IEnumerable<Boid>> neighborsLists)
     {
         var count = 1;
@@ -74,6 +80,9 @@ public class Boid : MonoBehaviour, ICellEntity
         return nearestBoid;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public void ProcessDirection()
     {
         var newDirection = transform.forward;
@@ -113,16 +122,29 @@ public class Boid : MonoBehaviour, ICellEntity
         transform.forward = Vector3.Lerp(transform.forward, newDirection, Settings.DirectionReactionSpeed * Time.deltaTime);
     }
     
+    /// <summary>
+    /// 
+    /// </summary>
     public void ProcessSpeed()
     {
         transform.position += Settings.Speed * Time.deltaTime * transform.forward;
     }
     
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TCell"></typeparam>
+    /// <typeparam name="TAggregation"></typeparam>
+    /// <param name="manager"></param>
     public void SetCellManager<TCell, TAggregation>(ICellManager<TCell, TAggregation> manager) where TCell : ICellEntity
     {
         CellManager = (ICellManager<Boid, AggregatedBoidCell>)manager;
     }
     
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public System.Numerics.Vector3 ProvideCellPosition()
     {
         var p = transform.position;
@@ -130,7 +152,9 @@ public class Boid : MonoBehaviour, ICellEntity
     }
 
     
-
+    /// <summary>
+    /// 
+    /// </summary>
     private void OnDrawGizmosSelected()
     {
         var neighborLists = CellManager.GetNeighbourEntities(ProvideCellPosition());

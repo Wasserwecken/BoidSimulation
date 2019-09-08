@@ -8,8 +8,9 @@ public class TargetSetter : MonoBehaviour
     public BoidSettings[] Settings;
 
 
-
-    // Update is called once per frame
+    /// <summary>
+    /// 
+    /// </summary>
     void Update()
     {
         foreach(var setting in Settings)

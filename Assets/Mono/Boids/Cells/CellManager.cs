@@ -33,6 +33,10 @@ public class CellManager<TEntity, TAggregation>
         NeighborsResult = new IEnumerable<TEntity>[8];
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="cellSize"></param>
     public CellManager(float cellSize)
         : this()
     {
@@ -40,7 +44,10 @@ public class CellManager<TEntity, TAggregation>
     }
     
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="entity"></param>
     public void Add(TEntity entity)
     {
         if (!Entities.Contains(entity))
@@ -50,15 +57,30 @@ public class CellManager<TEntity, TAggregation>
         }
     }
     
-    public void UpdateLists()
+    /// <summary>
+    /// 
+    /// </summary>
+    public void UpdateCells()
     {
-        EntityBuckets = Entities.ToLookup(entity => PositionHash(entity.ProvideCellPosition()));
+        EntityBuckets = Entities.ToLookup(entity => Vector3Hash(Vector3.Multiply(CellScale, entity.ProvideCellPosition())));
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void UpdateCellAggregates()
+    {
         EntityAggregates = EntityBuckets.ToDictionary(
             bucket => bucket.Key,
             bucket => bucket.Aggregate(new TAggregation(), (TAggregation aggregation, TEntity entity) => aggregation.Add(entity))
         );
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     public IEnumerable<TEntity>[] GetNeighbourEntities(Vector3 position)
     {
         var centerOffset = SignVector(position) * new Vector3(0.5f);
@@ -79,13 +101,19 @@ public class CellManager<TEntity, TAggregation>
         return NeighborsResult;
     }
     
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     public TAggregation GetNeighborAggregation(Vector3 position) // 7.7ms
     {
         var centerOffset = SignVector(position) * new Vector3(0.5f);
         var bucketCenter = CeilVector(position) - centerOffset;
         var relevantDirection = SignVector(position - bucketCenter);
-        
-        AggregationResult.Clear().Combine(EntityAggregates[PositionHash(position)]);
+
+        AggregationResult.Clear();
+        AggregationResult.Combine(EntityAggregates[Vector3Hash(Vector3.Multiply(CellScale, position))]);
         foreach (var center in RelevantNeighborBucketCenters(bucketCenter, relevantDirection))
         {
             var otherBucketHash = Vector3Hash(center);
@@ -96,6 +124,13 @@ public class CellManager<TEntity, TAggregation>
         return AggregationResult.Finialize();
     }
     
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="origin"></param>
+    /// <param name="relevantDirection"></param>
+    /// <returns></returns>
     private Vector3[] RelevantNeighborBucketCenters(Vector3 origin, Vector3 relevantDirection)
     {
         origin *= CellScale;
@@ -114,11 +149,11 @@ public class CellManager<TEntity, TAggregation>
         };
     }
     
-    private int PositionHash(Vector3 position)
-    {
-        return Vector3Hash(Vector3.Multiply(CellScale, position));
-    }
-    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="vector"></param>
+    /// <returns></returns>
     private int Vector3Hash(Vector3 vector)
     {
         var hash = 0;
@@ -130,6 +165,11 @@ public class CellManager<TEntity, TAggregation>
         return hash;
     }
     
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="v"></param>
+    /// <returns></returns>
     private Vector3 CeilVector(Vector3 v)
     {
         v.X = (int)v.X + Math.Sign(v.X);
@@ -137,14 +177,13 @@ public class CellManager<TEntity, TAggregation>
         v.Z = (int)v.Z + Math.Sign(v.Z);
 
         return v;
-
-        //return new Vector3(
-        //    (int)v.X + Math.Sign(v.X),
-        //    (int)v.Y + Math.Sign(v.Y),
-        //    (int)v.Z + Math.Sign(v.Z)
-        //);
     }
     
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="v"></param>
+    /// <returns></returns>
     private Vector3 SignVector(Vector3 v)
     {
         v.X = Math.Sign(v.X);
@@ -152,11 +191,5 @@ public class CellManager<TEntity, TAggregation>
         v.Z = Math.Sign(v.Z);
 
         return v;
-
-        //return new Vector3(
-        //    Math.Sign(v.X),
-        //    Math.Sign(v.Y),
-        //    Math.Sign(v.Z)
-        //);
     }
 }

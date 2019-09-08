@@ -10,7 +10,9 @@ public class SpawnBoids : MonoBehaviour
     public float Radius;
     
 
-
+    /// <summary>
+    /// 
+    /// </summary>
     void Start()
     {
         for (int index = 0; index < Count; index++)
@@ -21,7 +23,9 @@ public class SpawnBoids : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// 
+    /// </summary>
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
