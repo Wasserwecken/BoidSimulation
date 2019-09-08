@@ -110,7 +110,7 @@ public class Boid : MonoBehaviour, ICellEntity
             }
         }
         
-        transform.forward = Vector3.Lerp(transform.forward, newDirection, Settings.DirectionReactionSpeed);
+        transform.forward = Vector3.Lerp(transform.forward, newDirection, Settings.DirectionReactionSpeed * Time.deltaTime);
     }
     
     public void ProcessSpeed()
