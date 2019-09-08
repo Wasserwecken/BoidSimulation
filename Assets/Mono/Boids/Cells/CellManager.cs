@@ -9,24 +9,28 @@ public class CellManager<TEntity, TAggregation>
     where TEntity : ICellEntity
     where TAggregation : ICellAggregation<TAggregation, TEntity>, new()
 {
+    public List<TEntity> Entities;
+    public ILookup<int, TEntity> EntityBuckets;
+    public Dictionary<int, TAggregation> EntityAggregates;
     public float CellScale { get; private set; }
     public float CellSize
     {
         get { return 1 / CellScale; }
         set { CellScale = 1 / value;}
     }
-    public List<TEntity> Entities;
-    public ILookup<int, TEntity> EntityBuckets;
-    public Dictionary<int, TAggregation> EntityAggregates;
-
+    
+    private IEnumerable<TEntity>[] NeighborsResult;
     private TAggregation AggregationResult;
 
 
-
+    /// <summary>
+    /// 
+    /// </summary>
     public CellManager()
     {
         Entities = new List<TEntity>();
         AggregationResult = new TAggregation();
+        NeighborsResult = new IEnumerable<TEntity>[8];
     }
 
     public CellManager(float cellSize)
@@ -62,16 +66,17 @@ public class CellManager<TEntity, TAggregation>
         var relevantDirection = SignVector(position - bucketCenter);
 
         bucketCenter *= CellScale;
-        return new IEnumerable<TEntity>[] {
-            EntityBuckets[Vector3Hash(bucketCenter)],
-            EntityBuckets[Vector3Hash(bucketCenter + Vector3.One * relevantDirection)],
-            EntityBuckets[Vector3Hash(bucketCenter + new Vector3(relevantDirection.X, 0f, 0f))],
-            EntityBuckets[Vector3Hash(bucketCenter + new Vector3(0f, relevantDirection.Y, 0f))],
-            EntityBuckets[Vector3Hash(bucketCenter + new Vector3(0f, 0f, relevantDirection.Z))],
-            EntityBuckets[Vector3Hash(bucketCenter + new Vector3(relevantDirection.X, relevantDirection.Y, 0f))],
-            EntityBuckets[Vector3Hash(bucketCenter + new Vector3(relevantDirection.X, 0f, relevantDirection.Z))],
-            EntityBuckets[Vector3Hash(bucketCenter + new Vector3(0f, relevantDirection.Y, relevantDirection.Z))]
-        };
+
+        NeighborsResult[0] = EntityBuckets[Vector3Hash(bucketCenter)];
+        NeighborsResult[1] = EntityBuckets[Vector3Hash(bucketCenter + Vector3.One * relevantDirection)];
+        NeighborsResult[2] = EntityBuckets[Vector3Hash(bucketCenter + new Vector3(relevantDirection.X, 0f, 0f))];
+        NeighborsResult[3] = EntityBuckets[Vector3Hash(bucketCenter + new Vector3(0f, relevantDirection.Y, 0f))];
+        NeighborsResult[4] = EntityBuckets[Vector3Hash(bucketCenter + new Vector3(0f, 0f, relevantDirection.Z))];
+        NeighborsResult[5] = EntityBuckets[Vector3Hash(bucketCenter + new Vector3(relevantDirection.X, relevantDirection.Y, 0f))];
+        NeighborsResult[6] = EntityBuckets[Vector3Hash(bucketCenter + new Vector3(relevantDirection.X, 0f, relevantDirection.Z))];
+        NeighborsResult[7] = EntityBuckets[Vector3Hash(bucketCenter + new Vector3(0f, relevantDirection.Y, relevantDirection.Z))];
+
+        return NeighborsResult;
     }
     
     public TAggregation GetNeighborAggregation(Vector3 position) // 7.7ms
@@ -80,15 +85,15 @@ public class CellManager<TEntity, TAggregation>
         var bucketCenter = CeilVector(position) - centerOffset;
         var relevantDirection = SignVector(position - bucketCenter);
         
-        var summary = AggregationResult.Clear().Combine(EntityAggregates[PositionHash(position)]);
+        AggregationResult.Clear().Combine(EntityAggregates[PositionHash(position)]);
         foreach (var center in RelevantNeighborBucketCenters(bucketCenter, relevantDirection))
         {
             var otherBucketHash = Vector3Hash(center);
             if (EntityAggregates.ContainsKey(otherBucketHash))
-                summary = summary.Combine(EntityAggregates[otherBucketHash]);
+                AggregationResult.Combine(EntityAggregates[otherBucketHash]);
         }
 
-        return summary.Finialize();
+        return AggregationResult.Finialize();
     }
     
     private Vector3[] RelevantNeighborBucketCenters(Vector3 origin, Vector3 relevantDirection)
@@ -127,19 +132,31 @@ public class CellManager<TEntity, TAggregation>
     
     private Vector3 CeilVector(Vector3 v)
     {
-        return new Vector3(
-            (int)v.X + Math.Sign(v.X),
-            (int)v.Y + Math.Sign(v.Y),
-            (int)v.Z + Math.Sign(v.Z)
-        );
+        v.X = (int)v.X + Math.Sign(v.X);
+        v.Y = (int)v.Y + Math.Sign(v.Y);
+        v.Z = (int)v.Z + Math.Sign(v.Z);
+
+        return v;
+
+        //return new Vector3(
+        //    (int)v.X + Math.Sign(v.X),
+        //    (int)v.Y + Math.Sign(v.Y),
+        //    (int)v.Z + Math.Sign(v.Z)
+        //);
     }
     
     private Vector3 SignVector(Vector3 v)
     {
-        return new Vector3(
-            Math.Sign(v.X),
-            Math.Sign(v.Y),
-            Math.Sign(v.Z)
-        );
+        v.X = Math.Sign(v.X);
+        v.Y = Math.Sign(v.Y);
+        v.Z = Math.Sign(v.Z);
+
+        return v;
+
+        //return new Vector3(
+        //    Math.Sign(v.X),
+        //    Math.Sign(v.Y),
+        //    Math.Sign(v.Z)
+        //);
     }
 }
