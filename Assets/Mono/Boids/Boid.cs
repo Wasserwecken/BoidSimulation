@@ -31,7 +31,7 @@ public class Boid : MonoBehaviour, ICellEntity
 
 
         UnityEngine.Profiling.Profiler.BeginSample("Nearest neighbor");
-        NearestNeighbor = EvaluateNearestNeighbor(NeighborBoidsLists);
+        EvaluateNearestNeighbor(NeighborBoidsLists);
         UnityEngine.Profiling.Profiler.EndSample();
 
 
@@ -47,10 +47,10 @@ public class Boid : MonoBehaviour, ICellEntity
     /// </summary>
     /// <param name="neighborsLists"></param>
     /// <returns></returns>
-    public Boid EvaluateNearestNeighbor(IEnumerable<IEnumerable<Boid>> neighborsLists)
+    public void EvaluateNearestNeighbor(IEnumerable<IEnumerable<Boid>> neighborsLists)
     {
         var count = 1;
-        Boid nearestBoid = null;
+        NearestNeighbor = null;
         var nearestDistance = 1000000f;
 
         foreach(var list in neighborsLists)
@@ -65,7 +65,7 @@ public class Boid : MonoBehaviour, ICellEntity
                 var distance = (neighbor.transform.position - transform.position).sqrMagnitude;
                 if (distance < nearestDistance)
                 {
-                    nearestBoid = neighbor;
+                    NearestNeighbor = neighbor;
                     nearestDistance = distance;
                 }
 
@@ -75,9 +75,6 @@ public class Boid : MonoBehaviour, ICellEntity
             if (count > Settings.NearestNeighborLimit)
                 break;
         }
-
-
-        return nearestBoid;
     }
 
     /// <summary>

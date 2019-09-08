@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NearestNeighborLimit: 5
   Speed: 3
-  DirectionReactionSpeed: 0.05
+  DirectionReactionSpeed: 0.5
   TargetWeight: 1
   SeperationWeight: 1
   AlignmentWeight: 5
