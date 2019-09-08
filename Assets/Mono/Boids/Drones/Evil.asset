@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Evil
   m_EditorClassIdentifier: 
   NearestNeighborLimit: 5
-  Speed: 4
+  Speed: 3.5
   DirectionReactionSpeed: 0.02
   TargetWeight: 2
   SeperationWeight: 1
@@ -22,4 +22,4 @@ MonoBehaviour:
   Target: {x: 0, y: 0, z: 0}
   Relations:
   - Settings: {fileID: 11400000, guid: b50b7dec2f317034cbef74c5490c027c, type: 2}
-    Friendly: 20
+    Friendly: 200

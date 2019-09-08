@@ -4,7 +4,7 @@ public class BoidCellManager : MonoBehaviour
 {
     public float CellSize;
 
-    private ICellManager<Boid, AggregatedBoidData> CellManager = new CellManager<Boid, AggregatedBoidData>();
+    private ICellManager<Boid, AggregatedBoidCell> CellManager = new CellManager<Boid, AggregatedBoidCell>();
 
 
     void Start()

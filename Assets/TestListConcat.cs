@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Test : MonoBehaviour
+public class TestListConcat : MonoBehaviour
 {
 
     private List<List<float>> Lists;

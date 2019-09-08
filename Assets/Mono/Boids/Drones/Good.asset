@@ -17,9 +17,9 @@ MonoBehaviour:
   DirectionReactionSpeed: 0.05
   TargetWeight: 1
   SeperationWeight: 1
-  AlignmentWeight: 1
-  CohesionWeight: 1
+  AlignmentWeight: 5
+  CohesionWeight: 2
   Target: {x: 0, y: 0, z: 0}
   Relations:
   - Settings: {fileID: 11400000, guid: 537618ea11196e44da1f55ecb3fe2292, type: 2}
-    Friendly: -200
+    Friendly: -100

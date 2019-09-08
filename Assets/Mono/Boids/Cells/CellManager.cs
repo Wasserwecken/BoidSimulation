@@ -51,7 +51,7 @@ public class CellManager<TEntity, TAggregation>
         EntityBuckets = Entities.ToLookup(entity => PositionHash(entity.ProvideCellPosition()));
         EntityAggregates = EntityBuckets.ToDictionary(
             bucket => bucket.Key,
-            bucket => bucket.Aggregate(new TAggregation(), (TAggregation a, TEntity b) => a.Aggregate(b))
+            bucket => bucket.Aggregate(new TAggregation(), (TAggregation aggregation, TEntity entity) => aggregation.Add(entity))
         );
     }
 
@@ -80,12 +80,12 @@ public class CellManager<TEntity, TAggregation>
         var bucketCenter = CeilVector(position) - centerOffset;
         var relevantDirection = SignVector(position - bucketCenter);
         
-        var summary = AggregationResult.Clear().Aggregate(EntityAggregates[PositionHash(position)]);
+        var summary = AggregationResult.Clear().Combine(EntityAggregates[PositionHash(position)]);
         foreach (var center in RelevantNeighborBucketCenters(bucketCenter, relevantDirection))
         {
             var otherBucketHash = Vector3Hash(center);
             if (EntityAggregates.ContainsKey(otherBucketHash))
-                summary = summary.Aggregate(EntityAggregates[otherBucketHash]);
+                summary = summary.Combine(EntityAggregates[otherBucketHash]);
         }
 
         return summary.Finialize();
