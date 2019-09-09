@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5323593494814010336}
   - component: {fileID: 9209325294122701698}
   m_Layer: 0
-  m_Name: Evil
+  m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2156797085723d4484267c0d3e30c1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Settings: {fileID: 11400000, guid: 537618ea11196e44da1f55ecb3fe2292, type: 2}
+  Settings: {fileID: 0}
 --- !u!135 &9209325294122701698
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -176,7 +176,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 93735675fa7265148a7ea4d6fc014173, type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c172bbea217f27c4d8c5a6781ca4e6ee, type: 3}
 --- !u!4 &6799461681131871009 stripped

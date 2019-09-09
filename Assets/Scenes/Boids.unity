@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 228557392}
   - component: {fileID: 228557391}
   m_Layer: 0
-  m_Name: Spawner
+  m_Name: Spawner Good
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31f69d8d3597c84eb8080aa405fe270, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BoidPrefab: {fileID: 5323593494814010336, guid: beb589155c803ca4083d6fa643724d21,
+  BoidPrefab: {fileID: 763726843996037660, guid: 4f43910f9164a6c468ef16770016ad2a,
     type: 3}
   CellManager: {fileID: 827669138}
   Count: 400
@@ -462,7 +462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31f69d8d3597c84eb8080aa405fe270, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BoidPrefab: {fileID: 5323593494814010336, guid: bfe05774fc9da9943b766229f7c9b573,
+  BoidPrefab: {fileID: 3466788894601252267, guid: d02ccf0e24d0f1c418f1eee970a77721,
     type: 3}
   CellManager: {fileID: 827669138}
   Count: 400
