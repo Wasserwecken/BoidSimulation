@@ -9,7 +9,6 @@ using UnityEngine;
 public interface IBodyMovement
 {
     void Move(Vector2 direction);
+    void SetMovementMode(MovementModes mode);
     void Jump();
-    void Crouch();
 }
-

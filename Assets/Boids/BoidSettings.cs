@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Boid/Settings")]
+[CreateAssetMenu(menuName = "ScriptableObjects/Boid")]
 public class BoidSettings : ScriptableObject
 {
     [Serializable]
