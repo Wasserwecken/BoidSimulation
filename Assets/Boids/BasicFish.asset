@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NearestNeighborChecks: 5
   DirectionReactionSpeed: 0.5
-  Speed: 2
-  RandomSpeedAmplitude: 2
-  RandomSpeedFrequency: 1
+  BaseSpeed: 1
+  RandomSpeedAmplitude: 5
+  RandomSpeedFrequency: 0.5
   TargetWeight: 1
   SeperationWeight: 1
   AlignmentWeight: 5

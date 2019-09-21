@@ -91,16 +91,17 @@ public class Boid : MonoBehaviour, ICellEntity
     /// </summary>
     public void Process()
     {
-        CurrentSpeed = Settings.BaseSpeed + Settings.RandomSpeedAmplitude * Mathf.PerlinNoise(Time.time * Settings.RandomSpeedFrequency, BoidId);
         var newDirection = transform.forward;
+        CurrentSpeed = Settings.BaseSpeed + Settings.RandomSpeedAmplitude * Mathf.PerlinNoise(Time.time * Settings.RandomSpeedFrequency, BoidId);
         
         // Target
         newDirection += (Settings.Target - transform.position).normalized * Settings.TargetWeight;
 
         if (NearestNeighbor != null)
         {
+            var aggregatedType = AggregatedNeighbors.BoidTypes[Settings.GetInstanceID()];
             var nearestNeighborDiff = (transform.position - NearestNeighbor.transform.position);
-            var centerDiff = AggregatedNeighbors.BoidTypes[Settings.GetInstanceID()].Position - transform.position;
+            var centerDiff = aggregatedType.Position - transform.position;
             var centerDiffNormalized = centerDiff.normalized;
             
             
@@ -108,10 +109,11 @@ public class Boid : MonoBehaviour, ICellEntity
             newDirection += Settings.SeperationWeight * nearestNeighborDiff.normalized / Mathf.Max(0.001f, nearestNeighborDiff.sqrMagnitude);
 
             // Alignment
-            newDirection += Settings.AlignmentWeight * AggregatedNeighbors.BoidTypes[Settings.GetInstanceID()].Direction / Mathf.Max(0.001f, centerDiff.sqrMagnitude);
+            newDirection += Settings.AlignmentWeight * aggregatedType.Direction / Mathf.Max(0.001f, centerDiff.sqrMagnitude);
 
             // Cohesion
             newDirection += Settings.CohesionWeight * centerDiffNormalized;
+            CurrentSpeed = Mathf.Lerp(CurrentSpeed, aggregatedType.Speed, Mathf.Min(1f, 1 / centerDiff.sqrMagnitude));
 
             // Relation
             foreach(var relation in Settings.Relations)
@@ -120,8 +122,11 @@ public class Boid : MonoBehaviour, ICellEntity
                 if (AggregatedNeighbors.BoidTypes.ContainsKey(boidType))
                 {
                     var otherInfo = AggregatedNeighbors.BoidTypes[boidType];
-                    var diff = (otherInfo.Position - transform.position);
-                    newDirection += diff.normalized / diff.sqrMagnitude * relation.Attraction;
+                    var relationdiff = (otherInfo.Position - transform.position);
+
+                    var neighbourDirection = relationdiff.normalized / relationdiff.sqrMagnitude * relation.Attraction;
+                    newDirection += neighbourDirection;
+                    CurrentSpeed = Mathf.Lerp(Mathf.Max(CurrentSpeed, -CurrentSpeed * relation.Attraction), CurrentSpeed, Mathf.Max(1f, neighbourDirection.sqrMagnitude));
                 }
             }
         }
