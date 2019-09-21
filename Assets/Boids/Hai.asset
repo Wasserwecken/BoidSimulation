@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NearestNeighborChecks: 5
   DirectionReactionSpeed: 1
-  Speed: 3
-  RandomSpeedAmplitude: 0
-  RandomSpeedFrequency: 0
+  BaseSpeed: 1
+  RandomSpeedAmplitude: 5
+  RandomSpeedFrequency: 0.5
   TargetWeight: 1
-  SeperationWeight: 2
-  AlignmentWeight: 0.1
-  CohesionWeight: 0.1
+  SeperationWeight: 1
+  AlignmentWeight: 5
+  CohesionWeight: 2
   Target: {x: 0, y: 0, z: 0}
   Relations:
   - Behaviour: {fileID: 11400000, guid: 1cefaf7c4f0ade341902875467da11a4, type: 2}

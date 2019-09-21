@@ -153,10 +153,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SpawnEntries:
   - Prefab: {fileID: 763726843996037660, guid: 4f43910f9164a6c468ef16770016ad2a, type: 3}
-    Count: 500
+    Count: 400
   - Prefab: {fileID: 3466788894601252267, guid: d02ccf0e24d0f1c418f1eee970a77721,
       type: 3}
-    Count: 5
+    Count: 400
   ResponsibleManager: {fileID: 228557393}
   AreaRadius: 20
 --- !u!4 &228557392
@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7a7e474b555254b9ed6b1d0dee95ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CellSize: 2
+  CellSize: 3
 --- !u!1 &262496437
 GameObject:
   m_ObjectHideFlags: 0
