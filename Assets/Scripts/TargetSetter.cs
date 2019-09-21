@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TargetSetter : MonoBehaviour
 {
-    public BoidSettings[] Settings;
+    public BoidBehaviour[] Settings;
 
 
     /// <summary>

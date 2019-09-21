@@ -5,13 +5,23 @@ using UnityEngine;
 
 public class Boid : MonoBehaviour, ICellEntity
 {
-    public BoidSettings Settings;
+    public BoidBehaviour Settings;
+    public float CurrentSpeed;
 
     private ICellManager<Boid, AggregatedBoidCell> CellManager;
     private IEnumerable<Boid>[] NeighborBoidsLists;
     private AggregatedBoidCell AggregatedNeighbors;
     private Boid NearestNeighbor;
-    
+    private int BoidId;
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    void Start()
+    {
+        BoidId = (int)(Random.value * 10000f);
+    }
     
     /// <summary>
     /// 
@@ -20,24 +30,23 @@ public class Boid : MonoBehaviour, ICellEntity
     {
         var cellPosition = ProvideCellPosition();
 
-        UnityEngine.Profiling.Profiler.BeginSample("Neighbor boids");
+        UnityEngine.Profiling.Profiler.BeginSample("Neighbor boids request");
         NeighborBoidsLists = CellManager.GetNeighbourEntities(cellPosition);
         UnityEngine.Profiling.Profiler.EndSample();
 
 
-        UnityEngine.Profiling.Profiler.BeginSample("Neighbor aggregations");
+        UnityEngine.Profiling.Profiler.BeginSample("Neighbor aggregations request");
         AggregatedNeighbors = CellManager.GetNeighborAggregation(cellPosition);
         UnityEngine.Profiling.Profiler.EndSample();
 
 
-        UnityEngine.Profiling.Profiler.BeginSample("Nearest neighbor");
+        UnityEngine.Profiling.Profiler.BeginSample("Nearest neighbor evaluation");
         EvaluateNearestNeighbor(NeighborBoidsLists);
         UnityEngine.Profiling.Profiler.EndSample();
 
 
-        UnityEngine.Profiling.Profiler.BeginSample("Processing data");
-        ProcessDirection();
-        ProcessSpeed();
+        UnityEngine.Profiling.Profiler.BeginSample("Processing boid behaviour");
+        Process();
         UnityEngine.Profiling.Profiler.EndSample();
     }
     
@@ -50,14 +59,14 @@ public class Boid : MonoBehaviour, ICellEntity
     public void EvaluateNearestNeighbor(IEnumerable<IEnumerable<Boid>> neighborsLists)
     {
         var count = 1;
-        NearestNeighbor = null;
         var nearestDistance = 1000000f;
+        NearestNeighbor = null;
 
         foreach(var list in neighborsLists)
         {
             foreach (var neighbor in list)
             {
-                if (count > Settings.NearestNeighborLimit)
+                if (count > Settings.NearestNeighborChecks)
                     break;
                 if (neighbor.Equals(this))
                     continue;
@@ -72,7 +81,7 @@ public class Boid : MonoBehaviour, ICellEntity
                 count++;
             }
 
-            if (count > Settings.NearestNeighborLimit)
+            if (count > Settings.NearestNeighborChecks)
                 break;
         }
     }
@@ -80,17 +89,18 @@ public class Boid : MonoBehaviour, ICellEntity
     /// <summary>
     /// 
     /// </summary>
-    public void ProcessDirection()
+    public void Process()
     {
+        CurrentSpeed = Settings.BaseSpeed + Settings.RandomSpeedAmplitude * Mathf.PerlinNoise(Time.time * Settings.RandomSpeedFrequency, BoidId);
         var newDirection = transform.forward;
         
         // Target
         newDirection += (Settings.Target - transform.position).normalized * Settings.TargetWeight;
 
-        if (NearestNeighbor != null && AggregatedNeighbors.Count > 1)
+        if (NearestNeighbor != null)
         {
             var nearestNeighborDiff = (transform.position - NearestNeighbor.transform.position);
-            var centerDiff = AggregatedNeighbors.BoidTypeData[Settings.GetInstanceID()].Position - transform.position;
+            var centerDiff = AggregatedNeighbors.BoidTypes[Settings.GetInstanceID()].Position - transform.position;
             var centerDiffNormalized = centerDiff.normalized;
             
             
@@ -98,7 +108,7 @@ public class Boid : MonoBehaviour, ICellEntity
             newDirection += Settings.SeperationWeight * nearestNeighborDiff.normalized / Mathf.Max(0.001f, nearestNeighborDiff.sqrMagnitude);
 
             // Alignment
-            newDirection += Settings.AlignmentWeight * AggregatedNeighbors.BoidTypeData[Settings.GetInstanceID()].Direction / Mathf.Max(0.001f, centerDiff.sqrMagnitude);
+            newDirection += Settings.AlignmentWeight * AggregatedNeighbors.BoidTypes[Settings.GetInstanceID()].Direction / Mathf.Max(0.001f, centerDiff.sqrMagnitude);
 
             // Cohesion
             newDirection += Settings.CohesionWeight * centerDiffNormalized;
@@ -106,25 +116,18 @@ public class Boid : MonoBehaviour, ICellEntity
             // Relation
             foreach(var relation in Settings.Relations)
             {
-                var boidType = relation.Settings.GetInstanceID();
-                if (AggregatedNeighbors.BoidTypeData.ContainsKey(boidType))
+                var boidType = relation.Behaviour.GetInstanceID();
+                if (AggregatedNeighbors.BoidTypes.ContainsKey(boidType))
                 {
-                    var otherInfo = AggregatedNeighbors.BoidTypeData[boidType];
+                    var otherInfo = AggregatedNeighbors.BoidTypes[boidType];
                     var diff = (otherInfo.Position - transform.position);
-                    newDirection += diff.normalized / diff.sqrMagnitude * relation.Friendly;
+                    newDirection += diff.normalized / diff.sqrMagnitude * relation.Attraction;
                 }
             }
         }
         
         transform.forward = Vector3.Lerp(transform.forward, newDirection, Settings.DirectionReactionSpeed * Time.deltaTime);
-    }
-    
-    /// <summary>
-    /// 
-    /// </summary>
-    public void ProcessSpeed()
-    {
-        transform.position += Settings.Speed * Time.deltaTime * transform.forward;
+        transform.position += CurrentSpeed * Time.deltaTime * transform.forward;
     }
     
     /// <summary>
@@ -154,8 +157,8 @@ public class Boid : MonoBehaviour, ICellEntity
     /// </summary>
     private void OnDrawGizmosSelected()
     {
-        var neighborLists = CellManager.GetNeighbourEntities(ProvideCellPosition());
-        foreach(var list in neighborLists)
+        var neig = CellManager.GetNeighbourEntities(ProvideCellPosition());
+        foreach(var list in neig)
         {
             foreach(var neighbor in list)
             {
@@ -166,9 +169,9 @@ public class Boid : MonoBehaviour, ICellEntity
 
         var agg = CellManager.GetNeighborAggregation(ProvideCellPosition());
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, agg.BoidTypeData[Settings.GetInstanceID()].Position);
+        Gizmos.DrawLine(transform.position, agg.BoidTypes[Settings.GetInstanceID()].Position);
 
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, transform.position + agg.BoidTypeData[Settings.GetInstanceID()].Direction);
+        Gizmos.DrawLine(transform.position, transform.position + agg.BoidTypes[Settings.GetInstanceID()].Direction);
     }
 }

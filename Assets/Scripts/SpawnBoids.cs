@@ -30,11 +30,10 @@ public class SpawnBoids : MonoBehaviour
         }
     }
 
-
     /// <summary>
     /// 
     /// </summary>
-    private void OnDrawGizmosSelected()
+    void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, AreaRadius);

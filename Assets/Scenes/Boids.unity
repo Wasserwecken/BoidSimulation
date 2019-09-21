@@ -153,7 +153,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SpawnEntries:
   - Prefab: {fileID: 763726843996037660, guid: 4f43910f9164a6c468ef16770016ad2a, type: 3}
-    Count: 1000
+    Count: 500
+  - Prefab: {fileID: 3466788894601252267, guid: d02ccf0e24d0f1c418f1eee970a77721,
+      type: 3}
+    Count: 5
   ResponsibleManager: {fileID: 228557393}
   AreaRadius: 20
 --- !u!4 &228557392
@@ -304,8 +307,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Settings:
-  - {fileID: 11400000, guid: b50b7dec2f317034cbef74c5490c027c, type: 2}
-  - {fileID: 11400000, guid: 537618ea11196e44da1f55ecb3fe2292, type: 2}
+  - {fileID: 11400000, guid: 1cefaf7c4f0ade341902875467da11a4, type: 2}
+  - {fileID: 11400000, guid: 2a1bab8503fc8134483245048ae022f6, type: 2}
 --- !u!4 &795068163
 Transform:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ using UnityEngine;
 public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
 {
     public int Count { get; set; }
-    public Dictionary<int, CellData> BoidTypeData;
+    public Dictionary<int, CellData> BoidTypes;
 
 
     /// <summary>
@@ -16,7 +16,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
     /// </summary>
     public AggregatedBoidCell()
     {
-        BoidTypeData = new Dictionary<int, CellData>();
+        BoidTypes = new Dictionary<int, CellData>();
         Clear();
     }
     
@@ -31,10 +31,10 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
         Count++;
 
         var level = entity.Settings.GetInstanceID();
-        if (BoidTypeData.ContainsKey(level))
-            BoidTypeData[level] = BoidTypeData[level].Add(entity);
+        if (BoidTypes.ContainsKey(level))
+            BoidTypes[level] = BoidTypes[level].Add(entity);
         else
-            BoidTypeData.Add(level, new CellData().Add(entity));
+            BoidTypes.Add(level, new CellData().Add(entity));
         
         return this;
     }
@@ -48,12 +48,12 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
     {
         Count += other.Count;
 
-        foreach(var d in other.BoidTypeData)
+        foreach(var d in other.BoidTypes)
         {
-            if (BoidTypeData.ContainsKey(d.Key))
-                BoidTypeData[d.Key] = BoidTypeData[d.Key].Combine(d.Value);
+            if (BoidTypes.ContainsKey(d.Key))
+                BoidTypes[d.Key] = BoidTypes[d.Key].Combine(d.Value);
             else
-                BoidTypeData.Add(d.Key, new CellData().Combine(d.Value));
+                BoidTypes.Add(d.Key, new CellData().Combine(d.Value));
         }
 
         return this;
@@ -65,8 +65,8 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
     /// <returns></returns>
     public AggregatedBoidCell Finialize()
     {
-        foreach (var k in BoidTypeData.Keys.ToList())
-            BoidTypeData[k] = BoidTypeData[k].Finalize();
+        foreach (var k in BoidTypes.Keys.ToList())
+            BoidTypes[k] = BoidTypes[k].Finalize();
 
         return this;
     }
@@ -78,7 +78,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
     public AggregatedBoidCell Clear()
     {
         Count = 0;
-        BoidTypeData.Clear();
+        BoidTypes.Clear();
 
         return this;
     }
@@ -92,6 +92,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
         public int Count { get; set; }
         public Vector3 Position;
         public Vector3 Direction;
+        public float Speed;
 
 
         /// <summary>
@@ -105,6 +106,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
 
             Position += b.transform.position;
             Direction += b.transform.forward;
+            Speed += b.CurrentSpeed;
 
             return this;
         }
@@ -119,6 +121,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
             Count += other.Count;
             Position += other.Position;
             Direction += other.Direction;
+            Speed += other.Speed;
 
             return this;
         }
@@ -129,7 +132,8 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
         /// <returns></returns>
         public CellData Finalize()
         {
-            Position = Position / Count;
+            Speed /= Count;
+            Position /= Count;
             Direction.Normalize();
 
             return this;

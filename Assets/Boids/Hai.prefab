@@ -10,13 +10,13 @@ PrefabInstance:
     - target: {fileID: 5480537469121907558, guid: beb589155c803ca4083d6fa643724d21,
         type: 3}
       propertyPath: m_Name
-      value: Evil
+      value: Hai
       objectReference: {fileID: 0}
     - target: {fileID: 5323593494814010336, guid: beb589155c803ca4083d6fa643724d21,
         type: 3}
       propertyPath: Settings
       value: 
-      objectReference: {fileID: 11400000, guid: 537618ea11196e44da1f55ecb3fe2292,
+      objectReference: {fileID: 11400000, guid: 2a1bab8503fc8134483245048ae022f6,
         type: 2}
     - target: {fileID: 8672556742378341643, guid: beb589155c803ca4083d6fa643724d21,
         type: 3}

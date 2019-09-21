@@ -9,17 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05802c6cf126e0a4a912d2d4826de89b, type: 3}
-  m_Name: Evil
+  m_Script: {fileID: 11500000, guid: 655d041317f1f724b8c9079644ddfe5d, type: 3}
+  m_Name: Hai
   m_EditorClassIdentifier: 
-  NearestNeighborLimit: 5
-  Speed: 5
+  NearestNeighborChecks: 5
   DirectionReactionSpeed: 1
+  Speed: 3
+  RandomSpeedAmplitude: 0
+  RandomSpeedFrequency: 0
   TargetWeight: 1
-  SeperationWeight: 1
-  AlignmentWeight: 5
-  CohesionWeight: 2
+  SeperationWeight: 2
+  AlignmentWeight: 0.1
+  CohesionWeight: 0.1
   Target: {x: 0, y: 0, z: 0}
   Relations:
-  - Settings: {fileID: 11400000, guid: b50b7dec2f317034cbef74c5490c027c, type: 2}
-    Friendly: 5
+  - Behaviour: {fileID: 11400000, guid: 1cefaf7c4f0ade341902875467da11a4, type: 2}
+    Attraction: 10

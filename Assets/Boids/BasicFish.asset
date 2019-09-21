@@ -9,17 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05802c6cf126e0a4a912d2d4826de89b, type: 3}
+  m_Script: {fileID: 11500000, guid: 655d041317f1f724b8c9079644ddfe5d, type: 3}
   m_Name: BasicFish
   m_EditorClassIdentifier: 
-  NearestNeighborLimit: 5
-  Speed: 3
+  NearestNeighborChecks: 5
   DirectionReactionSpeed: 0.5
+  Speed: 2
+  RandomSpeedAmplitude: 2
+  RandomSpeedFrequency: 1
   TargetWeight: 1
   SeperationWeight: 1
   AlignmentWeight: 5
   CohesionWeight: 2
   Target: {x: 0, y: 0, z: 0}
   Relations:
-  - Settings: {fileID: 11400000, guid: 537618ea11196e44da1f55ecb3fe2292, type: 2}
-    Friendly: -100
+  - Behaviour: {fileID: 11400000, guid: 2a1bab8503fc8134483245048ae022f6, type: 2}
+    Attraction: -100
