@@ -38,7 +38,7 @@ public class Boid : MonoBehaviour, IChunkEntity
         UnityEngine.Profiling.Profiler.EndSample();
 
 
-        UnityEngine.Profiling.Profiler.BeginSample("Processing boid behaviour");
+        UnityEngine.Profiling.Profiler.BeginSample("Processing behaviour");
         Process();
         UnityEngine.Profiling.Profiler.EndSample();
     }
