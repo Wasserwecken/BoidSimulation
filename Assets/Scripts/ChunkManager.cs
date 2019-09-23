@@ -4,19 +4,19 @@ using System.Linq;
 using System.Numerics;
 
 
-public class CellManager<TEntity, TAggregation>
-    : ICellManager<TEntity, TAggregation>
-    where TEntity : ICellEntity
-    where TAggregation : ICellAggregation<TAggregation, TEntity>, new()
+public class ChunkManager<TEntity, TAggregation>
+    : IChunkManager<TEntity, TAggregation>
+    where TEntity : IChunkEntity
+    where TAggregation : IChunkAggregation<TAggregation, TEntity>, new()
 {
     public List<TEntity> Entities;
     public ILookup<int, TEntity> EntityBuckets;
     public Dictionary<int, TAggregation> EntityAggregates;
-    public float CellScale { get; private set; }
-    public float CellSize
+    public float CHunkScale { get; private set; }
+    public float ChunkSize
     {
-        get { return 1 / CellScale; }
-        set { CellScale = 1 / value;}
+        get { return 1 / CHunkScale; }
+        set { CHunkScale = 1 / value;}
     }
     
     private IEnumerable<TEntity>[] NeighborsResult;
@@ -26,7 +26,7 @@ public class CellManager<TEntity, TAggregation>
     /// <summary>
     /// 
     /// </summary>
-    public CellManager()
+    public ChunkManager()
     {
         Entities = new List<TEntity>();
         AggregationResult = new TAggregation();
@@ -36,11 +36,11 @@ public class CellManager<TEntity, TAggregation>
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="cellSize"></param>
-    public CellManager(float cellSize)
+    /// <param name="chunkSize"></param>
+    public ChunkManager(float chunkSize)
         : this()
     {
-        CellSize = cellSize;
+        ChunkSize = chunkSize;
     }
     
 
@@ -53,26 +53,26 @@ public class CellManager<TEntity, TAggregation>
         if (!Entities.Contains(entity))
         {
             Entities.Add(entity);
-            entity.SetCellManager(this);
+            entity.SetChunkManager(this);
         }
     }
     
     /// <summary>
     /// 
     /// </summary>
-    public void UpdateCells()
+    public void UpdateChunks()
     {
-        EntityBuckets = Entities.ToLookup(entity => Vector3Hash(Vector3.Multiply(CellScale, entity.ProvideCellPosition())));
+        EntityBuckets = Entities.ToLookup(entity => Vector3Hash(Vector3.Multiply(CHunkScale, entity.ProvidePosition())));
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public void UpdateCellAggregates()
+    public void UpdateCHunkAggregates()
     {
         EntityAggregates = EntityBuckets.ToDictionary(
             bucket => bucket.Key,
-            bucket => bucket.Aggregate(new TAggregation(), (TAggregation aggregation, TEntity entity) => aggregation.Add(entity))
+            bucket => bucket.Aggregate(new TAggregation(), (TAggregation aggregation, TEntity entity) => aggregation.Include(entity))
         );
     }
 
@@ -87,7 +87,7 @@ public class CellManager<TEntity, TAggregation>
         var bucketCenter = CeilVector(position) - centerOffset;
         var relevantDirection = SignVector(position - bucketCenter);
 
-        bucketCenter *= CellScale;
+        bucketCenter *= CHunkScale;
 
         NeighborsResult[0] = EntityBuckets[Vector3Hash(bucketCenter)];
         NeighborsResult[1] = EntityBuckets[Vector3Hash(bucketCenter + Vector3.One * relevantDirection)];
@@ -113,7 +113,7 @@ public class CellManager<TEntity, TAggregation>
         var relevantDirection = SignVector(position - bucketCenter);
 
         AggregationResult.Clear();
-        AggregationResult.Combine(EntityAggregates[Vector3Hash(Vector3.Multiply(CellScale, position))]);
+        AggregationResult.Combine(EntityAggregates[Vector3Hash(Vector3.Multiply(CHunkScale, position))]);
         foreach (var center in RelevantNeighborBucketCenters(bucketCenter, relevantDirection))
         {
             var otherBucketHash = Vector3Hash(center);
@@ -133,7 +133,7 @@ public class CellManager<TEntity, TAggregation>
     /// <returns></returns>
     private Vector3[] RelevantNeighborBucketCenters(Vector3 origin, Vector3 relevantDirection)
     {
-        origin *= CellScale;
+        origin *= CHunkScale;
 
         return new Vector3[]
         {

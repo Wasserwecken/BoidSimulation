@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Boid : MonoBehaviour, ICellEntity
+public class Boid : MonoBehaviour, IChunkEntity
 {
     public BoidBehaviour Settings;
     public float CurrentSpeed;
 
-    private ICellManager<Boid, AggregatedBoidCell> CellManager;
+    private IChunkManager<Boid, AggregatedBoidChunk> ChunkManager;
     private IEnumerable<Boid>[] NeighborBoidsLists;
-    private AggregatedBoidCell AggregatedNeighbors;
+    private AggregatedBoidChunk AggregatedNeighbors;
     private Boid NearestNeighbor;
     private int BoidId;
 
@@ -28,15 +28,15 @@ public class Boid : MonoBehaviour, ICellEntity
     /// </summary>
     void Update()
     {
-        var cellPosition = ProvideCellPosition();
+        var position = ProvidePosition();
 
         UnityEngine.Profiling.Profiler.BeginSample("Neighbor boids request");
-        NeighborBoidsLists = CellManager.GetNeighbourEntities(cellPosition);
+        NeighborBoidsLists = ChunkManager.GetNeighbourEntities(position);
         UnityEngine.Profiling.Profiler.EndSample();
 
 
         UnityEngine.Profiling.Profiler.BeginSample("Neighbor aggregations request");
-        AggregatedNeighbors = CellManager.GetNeighborAggregation(cellPosition);
+        AggregatedNeighbors = ChunkManager.GetNeighborAggregation(position);
         UnityEngine.Profiling.Profiler.EndSample();
 
 
@@ -138,19 +138,19 @@ public class Boid : MonoBehaviour, ICellEntity
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="TCell"></typeparam>
+    /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TAggregation"></typeparam>
     /// <param name="manager"></param>
-    public void SetCellManager<TCell, TAggregation>(ICellManager<TCell, TAggregation> manager) where TCell : ICellEntity
+    public void SetChunkManager<TEntity, TAggregation>(IChunkManager<TEntity, TAggregation> manager) where TEntity : IChunkEntity
     {
-        CellManager = (ICellManager<Boid, AggregatedBoidCell>)manager;
+        ChunkManager = (IChunkManager<Boid, AggregatedBoidChunk>)manager;
     }
     
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
-    public System.Numerics.Vector3 ProvideCellPosition()
+    public System.Numerics.Vector3 ProvidePosition()
     {
         var p = transform.position;
         return new System.Numerics.Vector3(p.x, p.y, p.z);
@@ -162,7 +162,7 @@ public class Boid : MonoBehaviour, ICellEntity
     /// </summary>
     private void OnDrawGizmosSelected()
     {
-        var neig = CellManager.GetNeighbourEntities(ProvideCellPosition());
+        var neig = ChunkManager.GetNeighbourEntities(ProvidePosition());
         foreach(var list in neig)
         {
             foreach(var neighbor in list)
@@ -172,7 +172,7 @@ public class Boid : MonoBehaviour, ICellEntity
             }
         }
 
-        var agg = CellManager.GetNeighborAggregation(ProvideCellPosition());
+        var agg = ChunkManager.GetNeighborAggregation(ProvidePosition());
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, agg.BoidTypes[Settings.GetInstanceID()].Position);
 

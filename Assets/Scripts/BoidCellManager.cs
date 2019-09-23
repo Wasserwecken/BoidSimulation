@@ -4,7 +4,7 @@ public class BoidCellManager : MonoBehaviour
 {
     public float CellSize;
 
-    private ICellManager<Boid, AggregatedBoidCell> CellManager = new CellManager<Boid, AggregatedBoidCell>();
+    private IChunkManager<Boid, AggregatedBoidChunk> CellManager = new ChunkManager<Boid, AggregatedBoidChunk>();
 
 
 
@@ -13,7 +13,7 @@ public class BoidCellManager : MonoBehaviour
     /// </summary>
     void Start()
     {
-        CellManager.CellSize = CellSize;
+        CellManager.ChunkSize = CellSize;
     }
 
     /// <summary>
@@ -21,8 +21,8 @@ public class BoidCellManager : MonoBehaviour
     /// </summary>
     void Update()
     {
-        CellManager.UpdateCells();
-        CellManager.UpdateCellAggregates();
+        CellManager.UpdateChunks();
+        CellManager.UpdateCHunkAggregates();
     }
 
 

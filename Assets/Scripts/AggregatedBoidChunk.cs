@@ -5,18 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
+public class AggregatedBoidChunk : IChunkAggregation<AggregatedBoidChunk, Boid>
 {
     public int Count { get; set; }
-    public Dictionary<int, CellData> BoidTypes;
+    public Dictionary<int, ChunkData> BoidTypes;
 
 
     /// <summary>
     /// 
     /// </summary>
-    public AggregatedBoidCell()
+    public AggregatedBoidChunk()
     {
-        BoidTypes = new Dictionary<int, CellData>();
+        BoidTypes = new Dictionary<int, ChunkData>();
         Clear();
     }
     
@@ -26,7 +26,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public AggregatedBoidCell Add(Boid entity)
+    public AggregatedBoidChunk Include(Boid entity)
     {
         Count++;
 
@@ -34,7 +34,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
         if (BoidTypes.ContainsKey(level))
             BoidTypes[level] = BoidTypes[level].Add(entity);
         else
-            BoidTypes.Add(level, new CellData().Add(entity));
+            BoidTypes.Add(level, new ChunkData().Add(entity));
         
         return this;
     }
@@ -44,7 +44,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
     /// </summary>
     /// <param name="other"></param>
     /// <returns></returns>
-    public AggregatedBoidCell Combine(AggregatedBoidCell other)
+    public AggregatedBoidChunk Combine(AggregatedBoidChunk other)
     {
         Count += other.Count;
 
@@ -53,7 +53,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
             if (BoidTypes.ContainsKey(d.Key))
                 BoidTypes[d.Key] = BoidTypes[d.Key].Combine(d.Value);
             else
-                BoidTypes.Add(d.Key, new CellData().Combine(d.Value));
+                BoidTypes.Add(d.Key, new ChunkData().Combine(d.Value));
         }
 
         return this;
@@ -63,7 +63,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
     /// 
     /// </summary>
     /// <returns></returns>
-    public AggregatedBoidCell Finialize()
+    public AggregatedBoidChunk Finialize()
     {
         foreach (var k in BoidTypes.Keys.ToList())
             BoidTypes[k] = BoidTypes[k].Finalize();
@@ -75,7 +75,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
     /// 
     /// </summary>
     /// <returns></returns>
-    public AggregatedBoidCell Clear()
+    public AggregatedBoidChunk Clear()
     {
         Count = 0;
         BoidTypes.Clear();
@@ -87,7 +87,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
     /// <summary>
     /// 
     /// </summary>
-    public struct CellData
+    public struct ChunkData
     {
         public int Count { get; set; }
         public Vector3 Position;
@@ -100,7 +100,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
         /// </summary>
         /// <param name="b"></param>
         /// <returns></returns>
-        public CellData Add(Boid b)
+        public ChunkData Add(Boid b)
         {
             Count++;
 
@@ -116,7 +116,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public CellData Combine(CellData other)
+        public ChunkData Combine(ChunkData other)
         {
             Count += other.Count;
             Position += other.Position;
@@ -130,7 +130,7 @@ public class AggregatedBoidCell : ICellAggregation<AggregatedBoidCell, Boid>
         /// 
         /// </summary>
         /// <returns></returns>
-        public CellData Finalize()
+        public ChunkData Finalize()
         {
             Speed /= Count;
             Position /= Count;

@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 
-public interface ICellManager<TEntity, TAggregation>
-    where TEntity : ICellEntity
+public interface IChunkManager<TEntity, TAggregation>
+    where TEntity : IChunkEntity
 {
-    float CellSize { get; set; }
+    float ChunkSize { get; set; }
 
     void Add(TEntity entity);
-    void UpdateCells();
-    void UpdateCellAggregates();
+    void UpdateChunks();
+    void UpdateCHunkAggregates();
     IEnumerable<TEntity>[] GetNeighbourEntities(Vector3 position);
     TAggregation GetNeighborAggregation(Vector3 position);
 }
