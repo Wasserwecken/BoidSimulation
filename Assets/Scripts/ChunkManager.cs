@@ -10,18 +10,17 @@ public class ChunkManager<TEntity, TAggregation>
     where TAggregation : IChunkAggregation<TAggregation, TEntity>, new()
 {
     public List<TEntity> Entities;
-    public ILookup<int, TEntity> EntityBuckets;
-    public Dictionary<int, TAggregation> EntityAggregates;
-    public float CHunkScale { get; private set; }
+    public Dictionary<int, List<TEntity>> Chunks;
+    public Dictionary<int, TAggregation> ChunkAggregations;
+    public float ChunkScale { get; private set; }
     public float ChunkSize
     {
-        get { return 1 / CHunkScale; }
-        set { CHunkScale = 1 / value;}
+        get { return 1 / ChunkScale; }
+        set { ChunkScale = 1 / value;}
     }
     
     private IEnumerable<TEntity>[] NeighborsResult;
     private TAggregation AggregationResult;
-
 
     /// <summary>
     /// 
@@ -29,6 +28,9 @@ public class ChunkManager<TEntity, TAggregation>
     public ChunkManager()
     {
         Entities = new List<TEntity>();
+        Chunks = new Dictionary<int, List<TEntity>>();
+        ChunkAggregations = new Dictionary<int, TAggregation>();
+
         AggregationResult = new TAggregation();
         NeighborsResult = new IEnumerable<TEntity>[8];
     }
@@ -62,18 +64,24 @@ public class ChunkManager<TEntity, TAggregation>
     /// </summary>
     public void UpdateChunks()
     {
-        EntityBuckets = Entities.ToLookup(entity => Vector3Hash(Vector3.Multiply(CHunkScale, entity.ProvidePosition())));
-    }
+        Chunks.Clear();
+        ChunkAggregations.Clear();
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public void UpdateCHunkAggregates()
-    {
-        EntityAggregates = EntityBuckets.ToDictionary(
-            bucket => bucket.Key,
-            bucket => bucket.Aggregate(new TAggregation(), (TAggregation aggregation, TEntity entity) => aggregation.Include(entity))
-        );
+        foreach(var entity in Entities)
+        {
+            var hash = Vector3Hash(Vector3.Multiply(ChunkScale, entity.ProvidePosition()));
+
+            if (Chunks.ContainsKey(hash))
+                Chunks[hash].Add(entity);
+            else
+                Chunks.Add(hash, new List<TEntity> { entity });
+
+
+            if (ChunkAggregations.ContainsKey(hash))
+                ChunkAggregations[hash].Include(entity);
+            else
+                ChunkAggregations.Add(hash, new TAggregation().Include(entity));
+        }
     }
 
     /// <summary>
@@ -87,8 +95,7 @@ public class ChunkManager<TEntity, TAggregation>
         var bucketCenter = CeilVector(position) - centerOffset;
         var relevantDirection = SignVector(position - bucketCenter);
 
-        bucketCenter *= CHunkScale;
-
+        bucketCenter *= ChunkScale;
         NeighborsResult[0] = EntityBuckets[Vector3Hash(bucketCenter)];
         NeighborsResult[1] = EntityBuckets[Vector3Hash(bucketCenter + Vector3.One * relevantDirection)];
         NeighborsResult[2] = EntityBuckets[Vector3Hash(bucketCenter + new Vector3(relevantDirection.X, 0f, 0f))];
@@ -113,7 +120,7 @@ public class ChunkManager<TEntity, TAggregation>
         var relevantDirection = SignVector(position - bucketCenter);
 
         AggregationResult.Clear();
-        AggregationResult.Combine(EntityAggregates[Vector3Hash(Vector3.Multiply(CHunkScale, position))]);
+        AggregationResult.Combine(EntityAggregates[Vector3Hash(Vector3.Multiply(ChunkScale, position))]);
         foreach (var center in RelevantNeighborBucketCenters(bucketCenter, relevantDirection))
         {
             var otherBucketHash = Vector3Hash(center);
@@ -133,7 +140,7 @@ public class ChunkManager<TEntity, TAggregation>
     /// <returns></returns>
     private Vector3[] RelevantNeighborBucketCenters(Vector3 origin, Vector3 relevantDirection)
     {
-        origin *= CHunkScale;
+        origin *= ChunkScale;
 
         return new Vector3[]
         {

@@ -8,7 +8,6 @@ public interface IChunkManager<TEntity, TAggregation>
 
     void Add(TEntity entity);
     void UpdateChunks();
-    void UpdateCHunkAggregates();
     IEnumerable<TEntity>[] GetNeighbourEntities(Vector3 position);
     TAggregation GetNeighborAggregation(Vector3 position);
 }
