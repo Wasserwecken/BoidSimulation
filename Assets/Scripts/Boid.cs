@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,8 +10,8 @@ public class Boid : MonoBehaviour, IChunkEntity
     public float CurrentSpeed;
 
     private IChunkManager<Boid, AggregatedBoidChunk> ChunkManager;
-    private IEnumerable<Boid>[] NeighborBoidsLists;
-    private AggregatedBoidChunk AggregatedNeighbors;
+    private Tuple<List<Boid>[], AggregatedBoidChunk> NeighborInfo;
+
     private Boid NearestNeighbor;
     private int BoidId;
 
@@ -20,7 +21,7 @@ public class Boid : MonoBehaviour, IChunkEntity
     /// </summary>
     void Start()
     {
-        BoidId = (int)(Random.value * 10000f);
+        BoidId = (int)(UnityEngine.Random.value * 10000f);
     }
     
     /// <summary>
@@ -28,20 +29,12 @@ public class Boid : MonoBehaviour, IChunkEntity
     /// </summary>
     void Update()
     {
-        var position = ProvidePosition();
-
-        UnityEngine.Profiling.Profiler.BeginSample("Neighbor boids request");
-        NeighborBoidsLists = ChunkManager.GetNeighbourEntities(position);
+        UnityEngine.Profiling.Profiler.BeginSample("Neighbor request");
+        NeighborInfo = ChunkManager.ProvideNeighborInfo(ProvidePosition());
         UnityEngine.Profiling.Profiler.EndSample();
-
-
-        UnityEngine.Profiling.Profiler.BeginSample("Neighbor aggregations request");
-        AggregatedNeighbors = ChunkManager.GetNeighborAggregation(position);
-        UnityEngine.Profiling.Profiler.EndSample();
-
 
         UnityEngine.Profiling.Profiler.BeginSample("Nearest neighbor evaluation");
-        EvaluateNearestNeighbor(NeighborBoidsLists);
+        EvaluateNearestNeighbor(NeighborInfo.Item1);
         UnityEngine.Profiling.Profiler.EndSample();
 
 
@@ -56,16 +49,18 @@ public class Boid : MonoBehaviour, IChunkEntity
     /// </summary>
     /// <param name="neighborsLists"></param>
     /// <returns></returns>
-    public void EvaluateNearestNeighbor(IEnumerable<IEnumerable<Boid>> neighborsLists)
+    public void EvaluateNearestNeighbor(List<Boid>[] neighborsLists)
     {
         var count = 1;
         var nearestDistance = 1000000f;
         NearestNeighbor = null;
 
-        foreach(var list in neighborsLists)
+        for(int listIndex = 0; listIndex < neighborsLists.Length; listIndex++)
         {
-            foreach (var neighbor in list)
+            for(int neighborIndex = 0; neighborIndex < neighborsLists[listIndex].Count(); neighborIndex++)
             {
+                var neighbor = neighborsLists[listIndex][neighborIndex];
+
                 if (count > Settings.NearestNeighborChecks)
                     break;
                 if (neighbor.Equals(this))
@@ -99,7 +94,7 @@ public class Boid : MonoBehaviour, IChunkEntity
 
         if (NearestNeighbor != null)
         {
-            var aggregatedType = AggregatedNeighbors.BoidTypes[Settings.GetInstanceID()];
+            var aggregatedType = NeighborInfo.Item2.BoidTypes[Settings.GetInstanceID()];
             var nearestNeighborDiff = (transform.position - NearestNeighbor.transform.position);
             var centerDiff = aggregatedType.Position - transform.position;
             var centerDiffNormalized = centerDiff.normalized;
@@ -119,9 +114,9 @@ public class Boid : MonoBehaviour, IChunkEntity
             foreach(var relation in Settings.Relations)
             {
                 var boidType = relation.Behaviour.GetInstanceID();
-                if (AggregatedNeighbors.BoidTypes.ContainsKey(boidType))
+                if (NeighborInfo.Item2.BoidTypes.ContainsKey(boidType))
                 {
-                    var otherInfo = AggregatedNeighbors.BoidTypes[boidType];
+                    var otherInfo = NeighborInfo.Item2.BoidTypes[boidType];
                     var relationdiff = (otherInfo.Position - transform.position);
 
                     var neighbourDirection = relationdiff.normalized / relationdiff.sqrMagnitude * relation.Attraction;
@@ -162,8 +157,9 @@ public class Boid : MonoBehaviour, IChunkEntity
     /// </summary>
     private void OnDrawGizmosSelected()
     {
-        var neig = ChunkManager.GetNeighbourEntities(ProvidePosition());
-        foreach(var list in neig)
+        var info = ChunkManager.ProvideNeighborInfo(ProvidePosition());
+
+        foreach(var list in info.Item1)
         {
             foreach(var neighbor in list)
             {
@@ -172,11 +168,13 @@ public class Boid : MonoBehaviour, IChunkEntity
             }
         }
 
-        var agg = ChunkManager.GetNeighborAggregation(ProvidePosition());
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, agg.BoidTypes[Settings.GetInstanceID()].Position);
+        if (info.Item2.BoidTypes.ContainsKey(Settings.GetInstanceID()))
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, info.Item2.BoidTypes[Settings.GetInstanceID()].Position);
 
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, transform.position + agg.BoidTypes[Settings.GetInstanceID()].Direction);
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(transform.position, transform.position + info.Item2.BoidTypes[Settings.GetInstanceID()].Direction);
+        }
     }
 }

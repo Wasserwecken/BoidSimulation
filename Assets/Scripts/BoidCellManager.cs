@@ -22,7 +22,6 @@ public class BoidCellManager : MonoBehaviour
     void Update()
     {
         CellManager.UpdateChunks();
-        CellManager.UpdateCHunkAggregates();
     }
 
 

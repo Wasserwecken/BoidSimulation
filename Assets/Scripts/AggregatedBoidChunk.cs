@@ -10,14 +10,17 @@ public class AggregatedBoidChunk : IChunkAggregation<AggregatedBoidChunk, Boid>
     public int Count { get; set; }
     public Dictionary<int, ChunkData> BoidTypes;
 
+    private List<int> TypeIds;
+
 
     /// <summary>
     /// 
     /// </summary>
     public AggregatedBoidChunk()
     {
+        Count = 0;
+        TypeIds = new List<int>();
         BoidTypes = new Dictionary<int, ChunkData>();
-        Clear();
     }
     
 
@@ -30,11 +33,15 @@ public class AggregatedBoidChunk : IChunkAggregation<AggregatedBoidChunk, Boid>
     {
         Count++;
 
-        var level = entity.Settings.GetInstanceID();
-        if (BoidTypes.ContainsKey(level))
-            BoidTypes[level] = BoidTypes[level].Add(entity);
+        var typeId = entity.Settings.GetInstanceID();
+        
+        if (BoidTypes.ContainsKey(typeId))
+            BoidTypes[typeId] = BoidTypes[typeId].Add(entity);
         else
-            BoidTypes.Add(level, new ChunkData().Add(entity));
+        {
+            TypeIds.Add(typeId);
+            BoidTypes.Add(typeId, new ChunkData().Add(entity));
+        }
         
         return this;
     }
@@ -48,12 +55,15 @@ public class AggregatedBoidChunk : IChunkAggregation<AggregatedBoidChunk, Boid>
     {
         Count += other.Count;
 
-        foreach(var d in other.BoidTypes)
+        foreach(var otherType in other.BoidTypes)
         {
-            if (BoidTypes.ContainsKey(d.Key))
-                BoidTypes[d.Key] = BoidTypes[d.Key].Combine(d.Value);
+            if (BoidTypes.ContainsKey(otherType.Key))
+                BoidTypes[otherType.Key] = BoidTypes[otherType.Key].Combine(otherType.Value);
             else
-                BoidTypes.Add(d.Key, new ChunkData().Combine(d.Value));
+            {
+                TypeIds.Add(otherType.Key);
+                BoidTypes.Add(otherType.Key, new ChunkData().Combine(otherType.Value));
+            }
         }
 
         return this;
@@ -65,8 +75,8 @@ public class AggregatedBoidChunk : IChunkAggregation<AggregatedBoidChunk, Boid>
     /// <returns></returns>
     public AggregatedBoidChunk Finialize()
     {
-        foreach (var k in BoidTypes.Keys.ToList())
-            BoidTypes[k] = BoidTypes[k].Finalize();
+        foreach (var id in TypeIds)
+            BoidTypes[id] = BoidTypes[id].Finalize();
 
         return this;
     }
@@ -78,6 +88,7 @@ public class AggregatedBoidChunk : IChunkAggregation<AggregatedBoidChunk, Boid>
     public AggregatedBoidChunk Clear()
     {
         Count = 0;
+        TypeIds.Clear();
         BoidTypes.Clear();
 
         return this;

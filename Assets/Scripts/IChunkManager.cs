@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 public interface IChunkManager<TEntity, TAggregation>
@@ -8,6 +9,5 @@ public interface IChunkManager<TEntity, TAggregation>
 
     void Add(TEntity entity);
     void UpdateChunks();
-    IEnumerable<TEntity>[] GetNeighbourEntities(Vector3 position);
-    TAggregation GetNeighborAggregation(Vector3 position);
+    Tuple<List<TEntity>[], TAggregation> ProvideNeighborInfo(Vector3 position);
 }

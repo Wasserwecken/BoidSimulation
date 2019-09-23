@@ -18,9 +18,23 @@ public class ChunkManager<TEntity, TAggregation>
         get { return 1 / ChunkScale; }
         set { ChunkScale = 1 / value;}
     }
-    
-    private IEnumerable<TEntity>[] NeighborsResult;
-    private TAggregation AggregationResult;
+
+
+    private readonly List<TEntity>[] NeighborsResult;
+    private readonly TAggregation AggregationResult;
+    private readonly Tuple<List<TEntity>[], TAggregation> NeighborInfoResult;
+    private readonly Vector3[] NeighborChunkCenters =
+    {
+        Vector3.One,
+        Vector3.UnitX,
+        Vector3.UnitY,
+        Vector3.UnitZ,
+        new Vector3(1f, 1f, 0f),
+        new Vector3(0f, 1f, 1f),
+        new Vector3(1f, 0f, 1f)
+    };
+    private readonly List<TEntity> EmptyChunk;
+
 
     /// <summary>
     /// 
@@ -31,8 +45,10 @@ public class ChunkManager<TEntity, TAggregation>
         Chunks = new Dictionary<int, List<TEntity>>();
         ChunkAggregations = new Dictionary<int, TAggregation>();
 
+        EmptyChunk = new List<TEntity>();
         AggregationResult = new TAggregation();
-        NeighborsResult = new IEnumerable<TEntity>[8];
+        NeighborsResult = new List<TEntity>[NeighborChunkCenters.Length + 1];
+        NeighborInfoResult = new Tuple<List<TEntity>[], TAggregation> (NeighborsResult, AggregationResult);
     }
 
     /// <summary>
@@ -67,21 +83,28 @@ public class ChunkManager<TEntity, TAggregation>
         Chunks.Clear();
         ChunkAggregations.Clear();
 
-        foreach(var entity in Entities)
-        {
-            var hash = Vector3Hash(Vector3.Multiply(ChunkScale, entity.ProvidePosition()));
 
+        foreach (var entity in Entities)
+        {
+            var hash = Vector3Hash(entity.ProvidePosition() * ChunkScale);
+
+
+            UnityEngine.Profiling.Profiler.BeginSample("Build Chunks");
             if (Chunks.ContainsKey(hash))
                 Chunks[hash].Add(entity);
             else
                 Chunks.Add(hash, new List<TEntity> { entity });
+            UnityEngine.Profiling.Profiler.EndSample();
 
 
+            UnityEngine.Profiling.Profiler.BeginSample("Aggregate Chunks");
             if (ChunkAggregations.ContainsKey(hash))
                 ChunkAggregations[hash].Include(entity);
             else
                 ChunkAggregations.Add(hash, new TAggregation().Include(entity));
+            UnityEngine.Profiling.Profiler.EndSample();
         }
+
     }
 
     /// <summary>
@@ -89,85 +112,43 @@ public class ChunkManager<TEntity, TAggregation>
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
-    public IEnumerable<TEntity>[] GetNeighbourEntities(Vector3 position)
+    public Tuple<List<TEntity>[], TAggregation> ProvideNeighborInfo(Vector3 position)
     {
-        var centerOffset = SignVector(position) * new Vector3(0.5f);
-        var bucketCenter = CeilVector(position) - centerOffset;
-        var relevantDirection = SignVector(position - bucketCenter);
+        var centerOffset = SignVector(position) * 0.5f;
+        var chunkCenter = CeilVector(position) - centerOffset;
+        var relevantDirection = SignVector(position - chunkCenter);
+        chunkCenter *= ChunkScale;
 
-        bucketCenter *= ChunkScale;
-        NeighborsResult[0] = EntityBuckets[Vector3Hash(bucketCenter)];
-        NeighborsResult[1] = EntityBuckets[Vector3Hash(bucketCenter + Vector3.One * relevantDirection)];
-        NeighborsResult[2] = EntityBuckets[Vector3Hash(bucketCenter + new Vector3(relevantDirection.X, 0f, 0f))];
-        NeighborsResult[3] = EntityBuckets[Vector3Hash(bucketCenter + new Vector3(0f, relevantDirection.Y, 0f))];
-        NeighborsResult[4] = EntityBuckets[Vector3Hash(bucketCenter + new Vector3(0f, 0f, relevantDirection.Z))];
-        NeighborsResult[5] = EntityBuckets[Vector3Hash(bucketCenter + new Vector3(relevantDirection.X, relevantDirection.Y, 0f))];
-        NeighborsResult[6] = EntityBuckets[Vector3Hash(bucketCenter + new Vector3(relevantDirection.X, 0f, relevantDirection.Z))];
-        NeighborsResult[7] = EntityBuckets[Vector3Hash(bucketCenter + new Vector3(0f, relevantDirection.Y, relevantDirection.Z))];
+        var hash = Vector3Hash(chunkCenter);
+        NeighborsResult[0] = Chunks[hash];
+        AggregationResult.Clear().Combine(ChunkAggregations[hash]);
 
-        return NeighborsResult;
-    }
-    
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="position"></param>
-    /// <returns></returns>
-    public TAggregation GetNeighborAggregation(Vector3 position) // 7.7ms
-    {
-        var centerOffset = SignVector(position) * new Vector3(0.5f);
-        var bucketCenter = CeilVector(position) - centerOffset;
-        var relevantDirection = SignVector(position - bucketCenter);
-
-        AggregationResult.Clear();
-        AggregationResult.Combine(EntityAggregates[Vector3Hash(Vector3.Multiply(ChunkScale, position))]);
-        foreach (var center in RelevantNeighborBucketCenters(bucketCenter, relevantDirection))
+        for (int i = 0; i < NeighborChunkCenters.Length; i++)
         {
-            var otherBucketHash = Vector3Hash(center);
-            if (EntityAggregates.ContainsKey(otherBucketHash))
-                AggregationResult.Combine(EntityAggregates[otherBucketHash]);
+            var otherHash = Vector3Hash(chunkCenter + (NeighborChunkCenters[i] * relevantDirection));
+
+            NeighborsResult[i + 1] = Chunks.GetValueOr(otherHash, EmptyChunk);
+            if (ChunkAggregations.ContainsKey(otherHash))
+                AggregationResult.Combine(ChunkAggregations[otherHash]);
         }
+        AggregationResult.Finialize();
 
-        return AggregationResult.Finialize();
+        return NeighborInfoResult; 
     }
     
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="origin"></param>
-    /// <param name="relevantDirection"></param>
+    /// <param name="v"></param>
     /// <returns></returns>
-    private Vector3[] RelevantNeighborBucketCenters(Vector3 origin, Vector3 relevantDirection)
-    {
-        origin *= ChunkScale;
-
-        return new Vector3[]
-        {
-            origin + Vector3.One * relevantDirection,
-
-            origin + new Vector3(relevantDirection.X, 0f, 0f),
-            origin + new Vector3(0f, relevantDirection.Y, 0f),
-            origin + new Vector3(0f, 0f, relevantDirection.Z),
-
-            origin + new Vector3(relevantDirection.X, relevantDirection.Y, 0f),
-            origin + new Vector3(relevantDirection.X, 0f, relevantDirection.Z),
-            origin + new Vector3(0f, relevantDirection.Y, relevantDirection.Z)
-        };
-    }
-    
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="vector"></param>
-    /// <returns></returns>
-    private int Vector3Hash(Vector3 vector)
+    private int Vector3Hash(Vector3 v)
     {
         var hash = 0;
 
-        hash += ((int)vector.X + Math.Sign(vector.X)) * 3;
-        hash += ((int)vector.Y + Math.Sign(vector.Y)) * 521527;
-        hash += ((int)vector.Z + Math.Sign(vector.Z)) * 1186439;
+        hash += ((int)v.X + Math.Sign(v.X)) * 3;
+        hash += ((int)v.Y + Math.Sign(v.Y)) * 521527;
+        hash += ((int)v.Z + Math.Sign(v.Z)) * 1186439;
 
         return hash;
     }
