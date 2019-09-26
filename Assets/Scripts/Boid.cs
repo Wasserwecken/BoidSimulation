@@ -157,6 +157,11 @@ public class Boid : MonoBehaviour, IChunkEntity
     /// </summary>
     private void OnDrawGizmosSelected()
     {
+        if (ChunkManager == null)
+            return;
+
+
+        ChunkManager.UpdateChunks();
         var info = ChunkManager.ProvideNeighborInfo(ProvidePosition());
 
         foreach(var list in info.Item1)
