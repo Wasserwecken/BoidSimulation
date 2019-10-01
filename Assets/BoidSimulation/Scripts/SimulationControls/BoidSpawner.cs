@@ -15,20 +15,26 @@ public class BoidSpawner : MonoBehaviour
     void Start()
     {
         foreach(var entry in SpawnEntries)
-        {
-            entry.Count.Times(() =>
-            {
-                var startPosition = Random.insideUnitSphere * AreaRadius + transform.position;
-                Boid boid = Instantiate(
-                        entry.Prefab,
-                        startPosition,
-                        Random.rotation,
-                        ResponsibleManager.transform
-                );
-                ResponsibleManager.Add(boid);
-            });
-        }
+            entry.Count.Times(() => Spawn(entry.Prefab));
     }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="prefab"></param>
+    public void Spawn(Boid prefab)
+    {
+        var startPosition = Random.insideUnitSphere * AreaRadius + transform.position;
+        Boid boid = Instantiate(
+                prefab,
+                startPosition,
+                Random.rotation,
+                ResponsibleManager.transform
+        );
+        ResponsibleManager.Add(boid);
+    }
+
 
     /// <summary>
     /// 

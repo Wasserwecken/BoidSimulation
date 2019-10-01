@@ -17,7 +17,7 @@ MonoBehaviour:
   BaseSpeed: 1
   RandomSpeedAmplitude: 5
   RandomSpeedFrequency: 0.5
-  TargetWeight: 1
+  TargetWeight: 2
   SeperationWeight: 1
   AlignmentWeight: 5
   CohesionWeight: 2

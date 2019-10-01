@@ -9,7 +9,7 @@ public class ChunkManager<TEntity, TAggregation>
     where TEntity : IChunkEntity
     where TAggregation : IChunkAggregation<TAggregation, TEntity>, new()
 {
-    public List<TEntity> Entities;
+    public List<TEntity> Entities { get; set; }
     public Dictionary<int, List<TEntity>> Chunks;
     public Dictionary<int, TAggregation> ChunkAggregations;
     public float ChunkScale { get; private set; }
@@ -75,7 +75,16 @@ public class ChunkManager<TEntity, TAggregation>
             entity.SetChunkManager(this);
         }
     }
-    
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="entity"></param>
+    public void Remove(TEntity entity)
+    {
+        Entities.Remove(entity);
+    }
+
     /// <summary>
     /// 
     /// </summary>
