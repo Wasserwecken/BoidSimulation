@@ -9,19 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 655d041317f1f724b8c9079644ddfe5d, type: 3}
+  m_Script: {fileID: 11500000, guid: 535c1c5a1d9e04a4987714da6fb1e150, type: 3}
   m_Name: Hai
   m_EditorClassIdentifier: 
   NearestNeighborChecks: 5
   DirectionReactionSpeed: 1
-  BaseSpeed: 1
-  RandomSpeedAmplitude: 5
+  BaseSpeed: 4
+  RandomSpeedAmplitude: 2
   RandomSpeedFrequency: 0.5
   TargetWeight: 1
-  SeperationWeight: 1
-  AlignmentWeight: 5
+  SeperationWeight: 5
+  AlignmentWeight: 2
   CohesionWeight: 2
   Target: {x: 0, y: 0, z: 0}
   Relations:
-  - Behaviour: {fileID: 11400000, guid: 1cefaf7c4f0ade341902875467da11a4, type: 2}
+  - Behaviour: {fileID: 11400000, guid: 146121bf5e11cff49a9d6a7ae9f0fa89, type: 2}
     Attraction: 10

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TargetSetter : MonoBehaviour
+public class BoidTargetSetter : MonoBehaviour
 {
     public BoidBehaviour[] Settings;
 

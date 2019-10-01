@@ -7,6 +7,7 @@ using UnityEngine;
 public class Boid : MonoBehaviour, IChunkEntity
 {
     public BoidBehaviour Settings;
+    [HideInInspector]
     public float CurrentSpeed;
 
     private IChunkManager<Boid, AggregatedBoidChunk> ChunkManager;
@@ -29,18 +30,10 @@ public class Boid : MonoBehaviour, IChunkEntity
     /// </summary>
     void Update()
     {
-        UnityEngine.Profiling.Profiler.BeginSample("Neighbor request");
         NeighborInfo = ChunkManager.ProvideNeighborInfo(ProvidePosition());
-        UnityEngine.Profiling.Profiler.EndSample();
-
-        UnityEngine.Profiling.Profiler.BeginSample("Nearest neighbor evaluation");
         EvaluateNearestNeighbor(NeighborInfo.Item1);
-        UnityEngine.Profiling.Profiler.EndSample();
 
-
-        UnityEngine.Profiling.Profiler.BeginSample("Processing behaviour");
         Process();
-        UnityEngine.Profiling.Profiler.EndSample();
     }
     
 

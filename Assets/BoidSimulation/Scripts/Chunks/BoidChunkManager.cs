@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-public class BoidCellManager : MonoBehaviour
+public class BoidChunkManager : MonoBehaviour
 {
     public float CellSize;
 
-    private IChunkManager<Boid, AggregatedBoidChunk> CellManager = new ChunkManager<Boid, AggregatedBoidChunk>();
+    private IChunkManager<Boid, AggregatedBoidChunk> ChunkManager = new ChunkManager<Boid, AggregatedBoidChunk>();
 
 
 
@@ -13,7 +13,7 @@ public class BoidCellManager : MonoBehaviour
     /// </summary>
     void Start()
     {
-        CellManager.ChunkSize = CellSize;
+        ChunkManager.ChunkSize = CellSize;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public class BoidCellManager : MonoBehaviour
     /// </summary>
     void Update()
     {
-        CellManager.UpdateChunks();
+        ChunkManager.UpdateChunks();
     }
 
 
@@ -32,6 +32,6 @@ public class BoidCellManager : MonoBehaviour
     /// <param name="boid"></param>
     public void Add(Boid boid)
     {
-        CellManager.Add(boid);
+        ChunkManager.Add(boid);
     }
 }

@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 655d041317f1f724b8c9079644ddfe5d, type: 3}
-  m_Name: BasicFish
+  m_Script: {fileID: 11500000, guid: 535c1c5a1d9e04a4987714da6fb1e150, type: 3}
+  m_Name: Fish
   m_EditorClassIdentifier: 
   NearestNeighborChecks: 5
   DirectionReactionSpeed: 0.5
@@ -23,5 +23,5 @@ MonoBehaviour:
   CohesionWeight: 2
   Target: {x: 0, y: 0, z: 0}
   Relations:
-  - Behaviour: {fileID: 11400000, guid: 2a1bab8503fc8134483245048ae022f6, type: 2}
+  - Behaviour: {fileID: 11400000, guid: aae538388885cc0449b5a7b643227003, type: 2}
     Attraction: -100

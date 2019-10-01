@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnBoids : MonoBehaviour
+public class BoidSpawner : MonoBehaviour
 {
     public List<SpawnEntry> SpawnEntries;
-    public BoidCellManager ResponsibleManager;
+    public BoidChunkManager ResponsibleManager;
     public float AreaRadius = 10;
     
 

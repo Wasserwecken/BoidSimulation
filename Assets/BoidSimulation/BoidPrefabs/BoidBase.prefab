@@ -9,8 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8672556742378341643}
-  - component: {fileID: 5323593494814010336}
-  - component: {fileID: 9209325294122701698}
+  - component: {fileID: 187496969907990558}
   m_Layer: 0
   m_Name: BoidBase
   m_TagString: Untagged
@@ -33,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5323593494814010336
+--- !u!114 &187496969907990558
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,24 +41,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5480537469121907558}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2156797085723d4484267c0d3e30c1b, type: 3}
+  m_Script: {fileID: 11500000, guid: aa8ad1d4c763f984988d375a618c85f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Settings: {fileID: 0}
   CurrentSpeed: 0
---- !u!135 &9209325294122701698
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5480537469121907558}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 0.3
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7308990139287387215
 GameObject:
   m_ObjectHideFlags: 0

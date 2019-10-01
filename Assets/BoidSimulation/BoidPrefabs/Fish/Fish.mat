@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BasicFish
+  m_Name: Fish
   m_Shader: {fileID: -6465566751694194690, guid: d00ed4bd39f28ba4d845db28cf4b8b20,
     type: 3}
   m_ShaderKeywords: 

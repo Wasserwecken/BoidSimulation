@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 5480537469121907558, guid: beb589155c803ca4083d6fa643724d21,
         type: 3}
       propertyPath: m_Name
-      value: BasicFish
+      value: Fish
       objectReference: {fileID: 0}
     - target: {fileID: 5323593494814010336, guid: beb589155c803ca4083d6fa643724d21,
         type: 3}
@@ -73,11 +73,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8087063654420848110, guid: beb589155c803ca4083d6fa643724d21,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 1007078904968539695, guid: beb589155c803ca4083d6fa643724d21,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -108,12 +103,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[2]
       value: 
-      objectReference: {fileID: 2100000, guid: 2270d059fb207c6448b533f4c65b4edd, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 2566580346178283744, guid: beb589155c803ca4083d6fa643724d21,
         type: 3}
       propertyPath: m_Materials.Array.data[3]
       value: 
-      objectReference: {fileID: 2100000, guid: bd3fad9db75bd254684cd9c84d552363, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 2566580346178283744, guid: beb589155c803ca4083d6fa643724d21,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -123,6 +118,19 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 2100000, guid: 3002edc27877e0d45915e5fe393e4937, type: 2}
-    m_RemovedComponents: []
+      objectReference: {fileID: 0}
+    - target: {fileID: 8087063654420848110, guid: beb589155c803ca4083d6fa643724d21,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 187496969907990558, guid: beb589155c803ca4083d6fa643724d21,
+        type: 3}
+      propertyPath: Settings
+      value: 
+      objectReference: {fileID: 11400000, guid: 146121bf5e11cff49a9d6a7ae9f0fa89,
+        type: 2}
+    m_RemovedComponents:
+    - {fileID: 5323593494814010336, guid: beb589155c803ca4083d6fa643724d21, type: 3}
+    - {fileID: 9209325294122701698, guid: beb589155c803ca4083d6fa643724d21, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: beb589155c803ca4083d6fa643724d21, type: 3}

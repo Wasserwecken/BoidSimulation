@@ -46,6 +46,7 @@ public class ChunkManager<TEntity, TAggregation>
         ChunkAggregations = new Dictionary<int, TAggregation>();
 
         EmptyChunk = new List<TEntity>();
+
         AggregationResult = new TAggregation();
         NeighborsResult = new List<TEntity>[NeighborChunkCenters.Length + 1];
         NeighborInfoResult = new Tuple<List<TEntity>[], TAggregation> (NeighborsResult, AggregationResult);
@@ -88,21 +89,17 @@ public class ChunkManager<TEntity, TAggregation>
         {
             var hash = Vector3Hash(entity.ProvidePosition() * ChunkScale);
 
-
-            UnityEngine.Profiling.Profiler.BeginSample("Build Chunks");
+            // sort boids into chunks
             if (Chunks.ContainsKey(hash))
                 Chunks[hash].Add(entity);
             else
                 Chunks.Add(hash, new List<TEntity> { entity });
-            UnityEngine.Profiling.Profiler.EndSample();
 
-
-            UnityEngine.Profiling.Profiler.BeginSample("Aggregate Chunks");
+            // build aggragation of the chunks
             if (ChunkAggregations.ContainsKey(hash))
                 ChunkAggregations[hash].Include(entity);
             else
                 ChunkAggregations.Add(hash, new TAggregation().Include(entity));
-            UnityEngine.Profiling.Profiler.EndSample();
         }
 
     }
@@ -114,15 +111,18 @@ public class ChunkManager<TEntity, TAggregation>
     /// <returns></returns>
     public Tuple<List<TEntity>[], TAggregation> ProvideNeighborInfo(Vector3 position)
     {
+        // evaulate the position to get neighbor chunks
         var centerOffset = SignVector(position) * 0.5f;
         var chunkCenter = CeilVector(position) - centerOffset;
         var relevantDirection = SignVector(position - chunkCenter);
         chunkCenter *= ChunkScale;
 
+        // insert the own chunk of the boid to the result
         var hash = Vector3Hash(chunkCenter);
         NeighborsResult[0] = Chunks[hash];
         AggregationResult.Clear().Combine(ChunkAggregations[hash]);
 
+        // add neighbor chunks to the result
         for (int i = 0; i < NeighborChunkCenters.Length; i++)
         {
             var otherHash = Vector3Hash(chunkCenter + (NeighborChunkCenters[i] * relevantDirection));
@@ -133,6 +133,7 @@ public class ChunkManager<TEntity, TAggregation>
         }
         AggregationResult.Finialize();
 
+        // the result variables holds referenes to the results, there is no need for assignment
         return NeighborInfoResult; 
     }
     
