@@ -46,9 +46,9 @@ MonoBehaviour:
   SpawnEntries:
   - Prefab: {fileID: 4747469208134859234, guid: 4f43910f9164a6c468ef16770016ad2a,
       type: 3}
-    Count: 800
+    Count: 1000
   - Prefab: {fileID: 8892262572859971157, guid: d02ccf0e24d0f1c418f1eee970a77721,
       type: 3}
-    Count: 20
+    Count: 5
   ResponsibleManager: {fileID: 0}
   AreaRadius: 10

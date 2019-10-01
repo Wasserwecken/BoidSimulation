@@ -112,7 +112,7 @@ public class Boid : MonoBehaviour, IChunkEntity
                     var otherInfo = NeighborInfo.Item2.BoidTypes[boidType];
                     var relationdiff = (otherInfo.Position - transform.position);
 
-                    var neighbourDirection = relationdiff.normalized / relationdiff.sqrMagnitude * relation.Attraction;
+                    var neighbourDirection = relationdiff.normalized / relationdiff.magnitude * relation.Attraction;
                     newDirection += neighbourDirection;
                     CurrentSpeed = Mathf.Lerp(Mathf.Max(CurrentSpeed, -CurrentSpeed * relation.Attraction), CurrentSpeed, Mathf.Max(1f, neighbourDirection.sqrMagnitude));
                 }
