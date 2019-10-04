@@ -65,9 +65,9 @@ public class BoidChunkManager : MonoBehaviour
         {
             if (FPS > DesiredFPS)
                 Spawner.Spawn(NewBoidPrefab);
-            else
+            else if (FPS < DesiredFPS)
             {
-                var boid = ChunkManager.Entities[0];
+                var boid = ChunkManager.Entities[ChunkManager.Entities.Count - 1];
                 ChunkManager.Remove(boid);
                 Destroy(boid.gameObject);
             }

@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 535c1c5a1d9e04a4987714da6fb1e150, type: 3}
   m_Name: Hai
   m_EditorClassIdentifier: 
-  NearestNeighborChecks: 10
-  DirectionReactionSpeed: 1
-  BaseSpeed: 4
-  RandomSpeedAmplitude: 5
-  RandomSpeedFrequency: 0.5
-  TargetWeight: 1
+  NearestNeighborChecks: 7
+  DirectionReactionSpeed: 0.3
+  BaseSpeed: 5
+  RandomSpeedAmplitude: 2
+  RandomSpeedFrequency: 0.1
+  TargetWeight: 2
   SeperationWeight: 5
-  AlignmentWeight: 2
-  CohesionWeight: 2
+  AlignmentWeight: 1
+  CohesionWeight: 1
   Target: {x: 0, y: 0, z: 0}
   Relations:
   - Behaviour: {fileID: 11400000, guid: 146121bf5e11cff49a9d6a7ae9f0fa89, type: 2}

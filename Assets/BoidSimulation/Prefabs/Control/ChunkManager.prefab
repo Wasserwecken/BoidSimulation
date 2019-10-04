@@ -48,6 +48,6 @@ MonoBehaviour:
   NewBoidPrefab: {fileID: 4747469208134859234, guid: 4f43910f9164a6c468ef16770016ad2a,
     type: 3}
   DesiredFPS: 30
-  TimeSamples: 20
+  TimeSamples: 30
   FPS: 0
   BoidCount: 0

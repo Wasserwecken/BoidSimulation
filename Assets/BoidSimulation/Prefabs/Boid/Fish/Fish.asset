@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 535c1c5a1d9e04a4987714da6fb1e150, type: 3}
   m_Name: Fish
   m_EditorClassIdentifier: 
-  NearestNeighborChecks: 10
-  DirectionReactionSpeed: 0.2
-  BaseSpeed: 0
-  RandomSpeedAmplitude: 5
+  NearestNeighborChecks: 7
+  DirectionReactionSpeed: 0.3
+  BaseSpeed: 1
+  RandomSpeedAmplitude: 4
   RandomSpeedFrequency: 0.5
   TargetWeight: 2
-  SeperationWeight: 1
+  SeperationWeight: 2
   AlignmentWeight: 5
   CohesionWeight: 2
   Target: {x: 0, y: 0, z: 0}
