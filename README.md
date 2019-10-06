@@ -1,5 +1,5 @@
 # Boid simulation
-![Image of simulation](/media/simulation.png)
+![Image of simulation](/Media/boids.png)
 
 ## Simulation rules
 - Seperation
