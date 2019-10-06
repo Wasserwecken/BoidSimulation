@@ -1,6 +1,10 @@
 # Boid simulation
 ![Image of simulation](/Media/boids.png)
 
+## Requirements
+- Unity 2019.2
+- LWRP
+
 ## Simulation rules
 - Seperation
 - Alignment
