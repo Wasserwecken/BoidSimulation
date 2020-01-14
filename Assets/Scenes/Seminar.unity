@@ -156,7 +156,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 4c5f3e581dbb66146a71ff9a9d58e037, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -244,8 +244,8 @@ MonoBehaviour:
   SpawnSize: 20
   BoidPrefab: {fileID: 2721323406857899040, guid: 40a99adc116643a46896d6e6de5da65b,
     type: 3}
-  Count: 1003
-  SpawnIn3D: 1
+  Count: 100
+  SpawnIn3D: 0
 --- !u!4 &1699453319
 Transform:
   m_ObjectHideFlags: 0
