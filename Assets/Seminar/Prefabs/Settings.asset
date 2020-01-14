@@ -18,7 +18,7 @@ MonoBehaviour:
   UseSeperation: 1
   SeperationWeight: 2
   UseAlignment: 1
-  AlignmentWeight: 0.5
+  AlignmentWeight: 1
   UseCohesion: 1
   CohesionWeight: 1
   UseTarget: 1
