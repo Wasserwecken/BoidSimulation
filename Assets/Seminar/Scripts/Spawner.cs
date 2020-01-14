@@ -27,18 +27,21 @@ public class Spawner : MonoBehaviour
 
     private void SpawnBoid()
     {
+        Quaternion randomRotation;
         var randomPosition = new Vector3(
                 (Random.value * 2f - 1f) * SpawnSize,
-                SpawnIn3D ? (Random.value * 2f - 1f) : 0f,
+                (Random.value * 2f - 1f) * SpawnSize,
                 (Random.value * 2f - 1f) * SpawnSize
             );
 
-        Quaternion randomRotation;
         if (SpawnIn3D)
             randomRotation = Random.rotation;
         else
+        {
+            randomPosition.y = 0f;
             randomRotation = Quaternion.AngleAxis(Random.value * 360f, Vector3.up);
+        }
 
-        Instantiate(BoidPrefab, randomPosition, randomRotation);
+        Instantiate(BoidPrefab, randomPosition, randomRotation, transform);
     }
 }
