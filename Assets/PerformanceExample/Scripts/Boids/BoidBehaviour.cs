@@ -5,32 +5,34 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/BoidBehaviour")]
-public class BoidBehaviour : ScriptableObject
+namespace PerformanceExample
 {
-    [Serializable]
-    public struct Relation
+    [CreateAssetMenu(menuName = "ScriptableObjects/Performance/BoidBehaviour")]
+    public class BoidBehaviour : ScriptableObject
     {
-        public BoidBehaviour Behaviour;
-        public float Attraction;
+        [Serializable]
+        public struct Relation
+        {
+            public BoidBehaviour Behaviour;
+            public float Attraction;
+        }
+
+
+        [Header("Performance...")]
+        public int NearestNeighborChecks;
+
+        [Header("General...")]
+        public float DirectionReactionSpeed;
+        public float BaseSpeed;
+        public float RandomSpeedAmplitude;
+        public float RandomSpeedFrequency;
+
+        [Header("Influences...")]
+        public float TargetWeight;
+        public float SeperationWeight;
+        public float AlignmentWeight;
+        public float CohesionWeight;
+        public Vector3 Target;
+        public Relation[] Relations;
     }
-
-
-    [Header("Performance...")]
-    public int NearestNeighborChecks;
-
-    [Header("General...")]
-    public float DirectionReactionSpeed;
-    public float BaseSpeed;
-    public float RandomSpeedAmplitude;
-    public float RandomSpeedFrequency;
-
-    [Header("Influences...")]
-    public float TargetWeight;
-    public float SeperationWeight;
-    public float AlignmentWeight;
-    public float CohesionWeight;
-    public Vector3 Target;
-    public Relation[] Relations;
 }
-

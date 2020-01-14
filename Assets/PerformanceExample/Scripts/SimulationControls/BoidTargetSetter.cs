@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using PerformanceExample;
 using UnityEngine;
 
-public class BoidTargetSetter : MonoBehaviour
+
+namespace PerformanceExample
 {
-    public BoidBehaviour[] Settings;
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    void Update()
+    public class BoidTargetSetter : MonoBehaviour
     {
-        foreach(var setting in Settings)
-            setting.Target = transform.position;        
+        public BoidBehaviour[] Settings;
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void Update()
+        {
+            foreach (var setting in Settings)
+                setting.Target = transform.position;
+        }
     }
 }
