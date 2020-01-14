@@ -9,23 +9,14 @@ using UnityEngine.Profiling;
 public class Boid : MonoBehaviour
 {
     public BoidSettings Settings;
-    private List<Boid> Neighbours;
 
-
-    /// <summary>
-    /// 
-    /// </summary>
-    void Start()
-    {
-        Neighbours = new List<Boid>();
-    }
 
     /// <summary>
     /// 
     /// </summary>
     void Update()
     {
-        Neighbours = GetNeighbours();
+        var neighbours = GetNeighbours();
         Profiler.EndSample();
 
         var newDirection = transform.forward;
@@ -33,16 +24,16 @@ public class Boid : MonoBehaviour
         if (Settings.UseTarget)
             newDirection = Target();
 
-        if (Neighbours.Count > 0)
+        if (neighbours.Count > 0)
         {
             if (Settings.UseSeperation)
-                newDirection += Seperation(Neighbours);
+                newDirection += Seperation(neighbours);
 
             if (Settings.UseAlignment)
-                newDirection += Cohesion(Neighbours);
+                newDirection += Cohesion(neighbours);
 
             if (Settings.UseCohesion)
-                newDirection += Alignment(Neighbours);
+                newDirection += Alignment(neighbours);
 
             newDirection.Normalize();
         }
@@ -125,7 +116,10 @@ public class Boid : MonoBehaviour
     /// </summary>
     private Vector3 Target()
     {
-        var result = Settings.Target - transform.position;
+        var result = Vector3.zero;
+        
+        result = Settings.Target - transform.position;
+
         return result.normalized * Settings.TargetWeight;
     }
 
@@ -158,22 +152,27 @@ public class Boid : MonoBehaviour
     /// </summary>
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.yellow;
+        var neighbours = GetNeighbours();
+        
+        Gizmos.color = new Color(1, 1, 0f, .05f);
         Gizmos.DrawWireSphere(transform.position, Settings.ViewRange);
 
-        Gizmos.color = Color.black;
-        foreach(var neighbour in Neighbours)
+        if (neighbours.Count > 0)
         {
-            Gizmos.DrawRay(transform.position, neighbour.transform.position - transform.position);
+            Gizmos.color = new Color(.0f, .0f, .0f, .5f);
+            foreach(var neighbour in neighbours)
+            {
+                Gizmos.DrawRay(transform.position, neighbour.transform.position - transform.position);
+            }
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(transform.position, Settings.UseSeperation ? Seperation(neighbours) * Settings.SeperationWeight : Vector3.zero);
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawRay(transform.position, Settings.UseAlignment ? Alignment(neighbours) * Settings.AlignmentWeight : Vector3.zero);
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(transform.position, Settings.UseCohesion ? Cohesion(neighbours) * Settings.CohesionWeight : Vector3.zero);
         }
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, Seperation(Neighbours));
-
-        Gizmos.color = Color.green;
-        Gizmos.DrawRay(transform.position, Alignment(Neighbours));
-
-        Gizmos.color = Color.blue;
-        Gizmos.DrawRay(transform.position, Cohesion(Neighbours));
     }
 }
