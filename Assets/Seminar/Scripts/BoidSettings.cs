@@ -12,9 +12,14 @@ public class BoidSettings : ScriptableObject
     [Header("Rules...")]
     public bool UseSeperation;
     public float SeperationWeight;
+
     public bool UseAlignment;
     public float AlignmentWeight;
+
     public bool UseCohesion;
     public float CohesionWeight;
-    public float CenterWeight;
+
+    public bool UseTarget;
+    public Vector3 Target;
+    public float TargetWeight;
 }

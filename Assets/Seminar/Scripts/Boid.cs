@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 /// <summary>
 /// https://www.red3d.com/cwr/boids/
@@ -8,9 +9,7 @@ using UnityEngine;
 public class Boid : MonoBehaviour
 {
     public BoidSettings Settings;
-    public List<Boid> OtherBoids;
-    public List<Boid> Neighbours;
-    
+    private List<Boid> Neighbours;
 
 
     /// <summary>
@@ -26,14 +25,24 @@ public class Boid : MonoBehaviour
     /// </summary>
     void Update()
     {
-        Neighbours = SetNeighbours(OtherBoids);
+        Neighbours = GetNeighbours();
+        Profiler.EndSample();
 
-        var newDirection = (Vector3.zero - transform.position).normalized * Settings.CenterWeight;
+        var newDirection = transform.forward;
+
+        if (Settings.UseTarget)
+            newDirection = Target();
+
         if (Neighbours.Count > 0)
         {
-            newDirection += Seperation(Neighbours);
-            newDirection += Cohesion(Neighbours);
-            newDirection += Alignment(Neighbours);
+            if (Settings.UseSeperation)
+                newDirection += Seperation(Neighbours);
+
+            if (Settings.UseAlignment)
+                newDirection += Cohesion(Neighbours);
+
+            if (Settings.UseCohesion)
+                newDirection += Alignment(Neighbours);
 
             newDirection.Normalize();
         }
@@ -42,21 +51,18 @@ public class Boid : MonoBehaviour
         ApplyMovement();
     }
 
-
     /// <summary>
     /// 
     /// </summary>
-    private List<Boid> SetNeighbours(List<Boid> otherBoids)
+    private List<Boid> GetNeighbours()
     {
         var result = new List<Boid>();
+        var colliders = Physics.OverlapSphere(transform.position, Settings.ViewRange);
 
-        foreach(var boid in OtherBoids)
+        foreach (var collider in colliders)
         {
-            if (boid == this)
-                continue;
-
-            var distance = (boid.transform.position - transform.position).magnitude;
-            if (distance < Settings.ViewRange)
+            var boid = collider.gameObject.GetComponent<Boid>();
+            if (boid != this)
                 result.Add(boid);
         }
 
@@ -110,7 +116,17 @@ public class Boid : MonoBehaviour
 
         result /= neighbours.Count;
         result = result - transform.position;
+
         return result.normalized * Settings.CohesionWeight;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private Vector3 Target()
+    {
+        var result = Settings.Target - transform.position;
+        return result.normalized * Settings.TargetWeight;
     }
 
 

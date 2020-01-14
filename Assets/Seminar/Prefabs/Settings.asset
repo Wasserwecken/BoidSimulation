@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: Settings
   m_EditorClassIdentifier: 
   DirectionReactionSpeed: 0.05
-  MovementSpeed: 0.05
+  MovementSpeed: 0.1
   ViewRange: 3
-  UseSeperation: 0
+  UseSeperation: 1
   SeperationWeight: 2
-  UseAlignment: 0
+  UseAlignment: 1
   AlignmentWeight: 0.5
-  UseCohesion: 0
+  UseCohesion: 1
   CohesionWeight: 1
-  CenterWeight: 0.2
+  UseTarget: 1
+  Target: {x: 0, y: 0, z: 0}
+  TargetWeight: 0.2

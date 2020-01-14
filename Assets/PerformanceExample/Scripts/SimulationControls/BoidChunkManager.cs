@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Profiling;
 
 namespace PerformanceExample
 {
@@ -40,7 +40,7 @@ namespace PerformanceExample
         void Update()
         {
             EvaluateInfos();
-            ChangeBoidCount();
+            //ChangeBoidCount();
             ChunkManager.UpdateChunks();
         }
 
