@@ -120,6 +120,54 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &565985700
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 565985702}
+  - component: {fileID: 565985701}
+  m_Layer: 0
+  m_Name: SpawnAreaB
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &565985701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565985700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee84a0c238516814199cdcdd1f5931a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SpawnSize: 10
+  BoidPrefab: {fileID: 2721323406857899040, guid: 40a99adc116643a46896d6e6de5da65b,
+    type: 3}
+  Count: 50
+  SpawnIn3D: 0
+--- !u!4 &565985702
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565985700}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 20, y: 0, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1004799299
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,7 +258,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1699453317
 GameObject:
@@ -223,7 +271,7 @@ GameObject:
   - component: {fileID: 1699453319}
   - component: {fileID: 1699453318}
   m_Layer: 0
-  m_Name: SpawnArea
+  m_Name: SpawnAreaA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -241,10 +289,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee84a0c238516814199cdcdd1f5931a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnSize: 20
+  SpawnSize: 10
   BoidPrefab: {fileID: 2721323406857899040, guid: 40a99adc116643a46896d6e6de5da65b,
     type: 3}
-  Count: 100
+  Count: 50
   SpawnIn3D: 0
 --- !u!4 &1699453319
 Transform:
@@ -254,7 +302,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1699453317}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -20, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

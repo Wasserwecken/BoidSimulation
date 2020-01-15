@@ -28,7 +28,7 @@ public class Spawner : MonoBehaviour
     private void SpawnBoid()
     {
         Quaternion randomRotation;
-        var randomPosition = new Vector3(
+        var randomPosition = transform.position + new Vector3(
                 (Random.value * 2f - 1f) * SpawnSize,
                 (Random.value * 2f - 1f) * SpawnSize,
                 (Random.value * 2f - 1f) * SpawnSize
