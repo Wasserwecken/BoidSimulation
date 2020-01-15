@@ -11,16 +11,15 @@ public class Boid : MonoBehaviour
     public BoidSettings Settings;
 
 
+
     /// <summary>
     /// 
     /// </summary>
     void Update()
     {
         var neighbours = GetNeighbours();
-        Profiler.EndSample();
 
         var newDirection = transform.forward;
-
         if (Settings.UseTarget)
             newDirection = Target();
 
@@ -41,6 +40,32 @@ public class Boid : MonoBehaviour
         ApplyDirection(newDirection);
         ApplyMovement();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /// <summary>
     /// 
@@ -63,6 +88,34 @@ public class Boid : MonoBehaviour
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /// <summary>
     /// 
     /// </summary>
@@ -79,6 +132,36 @@ public class Boid : MonoBehaviour
         return result * Settings.SeperationWeight;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /// <summary>
     /// 
     /// </summary>
@@ -94,6 +177,29 @@ public class Boid : MonoBehaviour
 
         return result * Settings.AlignmentWeight;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
     /// <summary>
     /// 
@@ -111,6 +217,37 @@ public class Boid : MonoBehaviour
         return result * Settings.CohesionWeight;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /// <summary>
     /// 
     /// </summary>
@@ -122,6 +259,39 @@ public class Boid : MonoBehaviour
 
         return result * Settings.TargetWeight;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -144,6 +314,36 @@ public class Boid : MonoBehaviour
     {
         transform.position += transform.forward * Settings.MovementSpeed;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
