@@ -23,4 +23,4 @@ MonoBehaviour:
   CohesionWeight: 1
   UseTarget: 1
   Target: {x: 0, y: 0, z: 0}
-  TargetWeight: 0.2
+  TargetWeight: 0.05

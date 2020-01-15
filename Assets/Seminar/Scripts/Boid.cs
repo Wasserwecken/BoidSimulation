@@ -92,7 +92,7 @@ public class Boid : MonoBehaviour
             result += neighbour.transform.forward * (1 / distance);
         }
 
-        return result.normalized * Settings.AlignmentWeight;
+        return result * Settings.AlignmentWeight;
     }
     
     /// <summary>
@@ -108,7 +108,7 @@ public class Boid : MonoBehaviour
         result /= neighbours.Count;
         result = result - transform.position;
 
-        return result.normalized * Settings.CohesionWeight;
+        return result * Settings.CohesionWeight;
     }
 
     /// <summary>
@@ -120,7 +120,7 @@ public class Boid : MonoBehaviour
         
         result = Settings.Target - transform.position;
 
-        return result.normalized * Settings.TargetWeight;
+        return result * Settings.TargetWeight;
     }
 
 
