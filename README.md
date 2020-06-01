@@ -1,6 +1,9 @@
 # Boid simulation Master
 ![Image of simulation](/gitMedia/boids.png)
 
+## Release binaries
+A build of the project can be found in the [release tab](https://github.com/Wasserwecken/BoidSimulation/releases)
+
 ## Requirements
 - Unity 2019.3
 
