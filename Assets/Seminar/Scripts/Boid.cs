@@ -11,28 +11,18 @@ public class Boid : MonoBehaviour
     public BoidSettings Settings;
 
 
-
-    /// <summary>
-    /// 
-    /// </summary>
     void Update()
     {
         var neighbours = GetNeighbours();
-
         var newDirection = transform.forward;
-        if (Settings.UseTarget)
-            newDirection = Target();
+
+        if (Settings.UseTarget) newDirection = RuleTarget();
 
         if (neighbours.Count > 0)
         {
-            if (Settings.UseSeperation)
-                newDirection += Seperation(neighbours);
-
-            if (Settings.UseAlignment)
-                newDirection += Cohesion(neighbours);
-
-            if (Settings.UseCohesion)
-                newDirection += Alignment(neighbours);
+            if (Settings.UseSeperation) newDirection += RuleSeperation(neighbours);
+            if (Settings.UseAlignment) newDirection += RuleCohesion(neighbours);
+            if (Settings.UseCohesion) newDirection += RuleAlignment(neighbours);
 
             newDirection.Normalize();
         }
@@ -42,34 +32,6 @@ public class Boid : MonoBehaviour
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /// <summary>
-    /// 
-    /// </summary>
     private List<Boid> GetNeighbours()
     {
         var result = new List<Boid>();
@@ -86,40 +48,7 @@ public class Boid : MonoBehaviour
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    private Vector3 Seperation(List<Boid> neighbours)
+    private Vector3 RuleSeperation(List<Boid> neighbours)
     {
         var result = Vector3.zero;
 
@@ -132,44 +61,11 @@ public class Boid : MonoBehaviour
         return result * Settings.SeperationWeight;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    private Vector3 Alignment(List<Boid> neighbours)
+    private Vector3 RuleAlignment(List<Boid> neighbours)
     {
         var result = Vector3.zero;
 
-        foreach(var neighbour in neighbours)
+        foreach (var neighbour in neighbours)
         {
             var distance = (neighbour.transform.position - transform.position).magnitude;
             result += neighbour.transform.forward * (1 / distance);
@@ -178,126 +74,27 @@ public class Boid : MonoBehaviour
         return result * Settings.AlignmentWeight;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    /// <summary>
-    /// 
-    /// </summary>
-    private Vector3 Cohesion(List<Boid> neighbours)
+    private Vector3 RuleCohesion(List<Boid> neighbours)
     {
         var result = Vector3.zero;
 
-        foreach(var neighbour in neighbours)
+        foreach (var neighbour in neighbours)
             result += neighbour.transform.position;
 
         result /= neighbours.Count;
-        result = result - transform.position;
+        result -= transform.position;
 
         return result * Settings.CohesionWeight;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    private Vector3 Target()
+    private Vector3 RuleTarget()
     {
-        var result = Vector3.zero;
-        
-        result = Settings.Target - transform.position;
+        var result = Settings.Target - transform.position;
 
         return result * Settings.TargetWeight;
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /// <summary>
-    /// 
-    /// </summary>
     private void ApplyDirection(Vector3 newDirection)
     {
         transform.forward = Vector3.Lerp(
@@ -306,73 +103,36 @@ public class Boid : MonoBehaviour
                 Settings.DirectionReactionSpeed
         );
     }
-    
-    /// <summary>
-    /// 
-    /// </summary>
+
     private void ApplyMovement()
     {
         transform.position += transform.forward * Settings.MovementSpeed;
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /// <summary>
-    /// 
-    /// </summary>
     private void OnDrawGizmosSelected()
     {
         var neighbours = GetNeighbours();
-        
+
         Gizmos.color = new Color(1, 1, 0f, .05f);
         Gizmos.DrawWireSphere(transform.position, Settings.ViewRange);
 
         if (neighbours.Count > 0)
         {
             Gizmos.color = new Color(.0f, .0f, .0f, .5f);
-            foreach(var neighbour in neighbours)
+            foreach (var neighbour in neighbours)
             {
                 Gizmos.DrawRay(transform.position, neighbour.transform.position - transform.position);
             }
 
             Gizmos.color = Color.red;
-            Gizmos.DrawRay(transform.position, Settings.UseSeperation ? Seperation(neighbours) * Settings.SeperationWeight : Vector3.zero);
+            Gizmos.DrawRay(transform.position, Settings.UseSeperation ? RuleSeperation(neighbours) * Settings.SeperationWeight : Vector3.zero);
 
             Gizmos.color = Color.green;
-            Gizmos.DrawRay(transform.position, Settings.UseAlignment ? Alignment(neighbours) * Settings.AlignmentWeight : Vector3.zero);
+            Gizmos.DrawRay(transform.position, Settings.UseAlignment ? RuleAlignment(neighbours) * Settings.AlignmentWeight : Vector3.zero);
 
             Gizmos.color = Color.blue;
-            Gizmos.DrawRay(transform.position, Settings.UseCohesion ? Cohesion(neighbours) * Settings.CohesionWeight : Vector3.zero);
+            Gizmos.DrawRay(transform.position, Settings.UseCohesion ? RuleCohesion(neighbours) * Settings.CohesionWeight : Vector3.zero);
         }
     }
 }
