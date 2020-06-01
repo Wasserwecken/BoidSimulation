@@ -153,7 +153,7 @@ MonoBehaviour:
   SpawnSize: 10
   BoidPrefab: {fileID: 2721323406857899040, guid: 40a99adc116643a46896d6e6de5da65b,
     type: 3}
-  Count: 50
+  Count: 200
   SpawnIn3D: 0
 --- !u!4 &565985702
 Transform:
@@ -248,6 +248,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Settings: {fileID: 11400000, guid: 3e458bd93ea01d04299d875f20e85373, type: 2}
+  movementRadius: 35
+  movementSpeed: 0.3
 --- !u!4 &1004799303
 Transform:
   m_ObjectHideFlags: 0
@@ -294,7 +296,7 @@ MonoBehaviour:
   SpawnSize: 10
   BoidPrefab: {fileID: 2721323406857899040, guid: 40a99adc116643a46896d6e6de5da65b,
     type: 3}
-  Count: 50
+  Count: 200
   SpawnIn3D: 0
 --- !u!4 &1699453319
 Transform:

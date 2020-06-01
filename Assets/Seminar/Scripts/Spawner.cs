@@ -10,29 +10,17 @@ public class Spawner : MonoBehaviour
     public bool SpawnIn3D;
 
 
-    /// <summary>
-    /// 
-    /// </summary>
     void Start()
     {
-        Count.Times(SpawnBoid);
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(transform.position, new Vector3(SpawnSize, SpawnIn3D ? SpawnSize : 0f, SpawnSize) * 2f);
+        for (int i = 0; i < Count; i++)
+            SpawnBoid();
     }
 
 
     private void SpawnBoid()
     {
         Quaternion randomRotation;
-        var randomPosition = transform.position + new Vector3(
-                (Random.value * 2f - 1f) * SpawnSize,
-                (Random.value * 2f - 1f) * SpawnSize,
-                (Random.value * 2f - 1f) * SpawnSize
-            );
+        var randomPosition = transform.position + Random.insideUnitSphere;
 
         if (SpawnIn3D)
             randomRotation = Random.rotation;
@@ -43,5 +31,12 @@ public class Spawner : MonoBehaviour
         }
 
         Instantiate(BoidPrefab, randomPosition, randomRotation, transform);
+    }
+
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireCube(transform.position, new Vector3(SpawnSize, SpawnIn3D ? SpawnSize : 0f, SpawnSize) * 2f);
     }
 }
