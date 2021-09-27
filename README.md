@@ -1,14 +1,11 @@
 # Boid simulation Master
-![Image of simulation](/gitMedia/boids.png)
+![Image of simulation](/.doc/boids.png)
 
 ## Release binaries
 A build of the project can be found in the [release tab](https://github.com/Wasserwecken/BoidSimulation/releases)
 
-## Requirements
-- Unity 2019.3
-
 ## Simulation rules
-- Seperation
+- Separation
 - Alignment
 - Cohesion
 - Target point
@@ -22,4 +19,4 @@ A build of the project can be found in the [release tab](https://github.com/Wass
 
 # Branch seminar
 Branch that was used to teach students in a workshop how boids are working.
-This simulation uses unity physics to determine its neighbours and a clear, not optimized, code style for the simulation rules for good readablility and understanding.
+This simulation uses unity physics to determine its neighbors and a clear, not optimized, code style for the simulation rules for good readability and understanding.
