@@ -1,14 +1,11 @@
 # Boid simulation
-![Image of simulation](/gitMedia/boids.png)
+![Image of simulation](/.doc/boids.png)
 
 This branch was used to teach students in a workshop how boids are working.
-This simulation uses unity physics to determine its neighbours and a clear, not optimized, code style for the simulation rules for good readablility and understanding.
-
-## Requirements
-- Unity 2019.3
+This simulation uses unity physics to determine its neighbors and a clear, not optimized, code style for the simulation rules for good readability and understanding.
 
 ## Simulation rules
-- Seperation
+- Separation
 - Alignment
 - Cohesion
 - Target point
