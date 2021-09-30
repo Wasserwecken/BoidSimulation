@@ -1,8 +1,10 @@
 # Boid simulation Master
 ![Image of simulation](/.doc/boids.png)
 
-## Release binaries
-A build of the project can be found in the [release tab](https://github.com/Wasserwecken/BoidSimulation/releases)
+## Releases
+A binary for windows be found in the [release tab](https://github.com/Wasserwecken/BoidSimulation/releases)
+
+Or try the web version right now: [webGL build](https://wasserwecken.github.io/BoidSimulation/)
 
 ## Simulation rules
 - Separation
